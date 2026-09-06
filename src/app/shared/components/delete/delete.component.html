@@ -1,0 +1,15 @@
+<div class="logout">
+  <div class="d-flex align-items-center gap-3">
+    <img src="images/denial.png" alt="logout" />
+    <h2 class="logout__title">Delete</h2>
+  </div>
+
+  <p class="logout__data">
+    This action cannot be undone, and the selected item will be permanently removed.
+  </p>
+  <p>Please confirm before continuing.</p>
+  <div class="logout__buttons">
+    <button class="logout__buttons__cancel" type="button" (click)="cancel()">Cancel</button>
+    <button class="logout__buttons__submit" type="button" (click)="confirm()">Delete</button>
+  </div>
+</div>

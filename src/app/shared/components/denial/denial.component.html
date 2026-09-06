@@ -1,0 +1,24 @@
+<div class="denial">
+  <img src="images/denial.png" alt="denial" />
+  <h2 class="denial__title">Deny application</h2>
+  <p class="denial__data">
+    Are you sure you want to deny this? Denying the application will close the process. Please
+    review this application for accuracy before proceeding.
+  </p>
+  <div class="form_field">
+    <label for="reason">Reason for denial*</label>
+    <div class="form_field__textarea" appearance="outline">
+      <textarea
+        [formControl]="reason"
+        name="reason"
+        placeholder="Enter reason for denial..."
+        matInput
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="denial__buttons">
+    <button class="denial__buttons__cancel" (click)="cancel()">Cancel</button>
+    <button class="denial__buttons__submit" (click)="onConfirm()">Deny</button>
+  </div>
+</div>

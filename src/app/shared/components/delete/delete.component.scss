@@ -1,0 +1,41 @@
+.logout {
+  padding: 1rem;
+  max-width: 20rem;
+  border-radius: 12px;
+  font-family: Inter;
+  font-style: normal;
+  &__title {
+    color: #101828;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+  &__data {
+    color: #667085;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    button {
+      padding: 0.5rem;
+      width: 40%;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    &__submit {
+      background-color: #d92d20;
+      color: white;
+      text-align: center;
+      &:hover {
+        cursor: pointer;
+        background-color: #d84b41da;
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.denial {
+  padding: 1.5rem;
+  max-width: 28rem;
+  background: #fff;
+  border-radius: 8px;
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+    }
+
+    &__submit {
+      background-color: #dc3545;
+      color: white;
+      border: none !important;
+
+      &:hover {
+        background-color: #bb2d3b;
+      }
+    }
+  }
+}
+
+.form_field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

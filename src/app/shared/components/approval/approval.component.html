@@ -1,0 +1,24 @@
+<div class="approval">
+  <img src="images/approval.png" alt="approval" />
+  <h2 class="approval__title">Approve application</h2>
+  <p class="approval__data">
+    Are you sure you want to approve this application? Once submitted, it can't undone. Please
+    review this application for accuracy before proceeding.
+  </p>
+
+  <div class="form_field">
+    <label for="reason">Reason for approval*</label>
+    <div class="form_field__textarea">
+      <textarea
+        [formControl]="reason"
+        name="reason"
+        placeholder="Enter reason for approval..."
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="approval__buttons">
+    <button type="button" class="approval__buttons__cancel" (click)="close()">Cancel</button>
+    <button type="button" class="approval__buttons__submit" (click)="onConfirm()">Approve</button>
+  </div>
+</div>
