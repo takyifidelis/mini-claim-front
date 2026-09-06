@@ -1,0 +1,245 @@
+<div class="detail-page form-page--container">
+  <div class="detail-page__header">
+    <div>
+      <div class="detail-page__title-row">
+        <h3 class="detail-page__title header-title fw-bold">
+          Review Claim: {{ claim()?.claimReference }}
+        </h3>
+        @if (claim()?.status) {
+          <app-status-badge [status]="claim()!.status" />
+        }
+      </div>
+      <p class="detail-page__description">
+        Policy:
+        <a [routerLink]="['/policies', claim()?.policyId]"
+          ><strong>{{ claim()?.policyNumber }}</strong></a
+        >
+        ({{ claim()?.insuredName }}) &bull; Currency: <strong>{{ claim()?.currency }}</strong>
+      </p>
+    </div>
+    <div class="detail-page__header-actions">
+      <a routerLink="/claims/review" class="btn btn-outline-secondary">Back to Review List</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (claim()) {
+    @if (actionError()) {
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        {{ actionError() }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="actionError.set(null)"
+          aria-label="Close"
+        ></button>
+      </div>
+    }
+
+    <!-- Claim Incident Facts & Cover Terms Grid -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="detail-page__panel h-100">
+          <h2 class="detail-page__panel-title">Claim Incident Facts</h2>
+          <dl class="detail-page__definitions">
+            <dt>Claim Reference</dt>
+            <dd>
+              <strong>{{ claim()!.claimReference }}</strong>
+            </dd>
+
+            <dt>Loss Date</dt>
+            <dd>{{ claim()!.lossDate | date: 'mediumDate' }}</dd>
+
+            <dt>Date Notified</dt>
+            <dd>{{ claim()!.dateNotified | date: 'mediumDate' }}</dd>
+
+            <dt>Loss Nature</dt>
+            <dd>{{ claim()!.lossNature }}</dd>
+
+            <dt>Estimated Loss</dt>
+            <dd>
+              <strong>{{ claim()!.estimatedLossAmount | money: claim()!.currency }}</strong>
+            </dd>
+
+            <dt>Created By</dt>
+            <dd>{{ claim()!.createdBy }} on {{ claim()!.createdAt | date: 'shortDate' }}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="detail-page__panel h-100">
+          <h2 class="detail-page__panel-title">Applicable Policy Cover Terms</h2>
+          <dl class="detail-page__definitions">
+            <dt>Cover Code</dt>
+            <dd>
+              <span class="badge bg-light text-dark border">{{ claim()!.coverCodeSnapshot }}</span>
+            </dd>
+
+            <dt>Cover Name</dt>
+            <dd>
+              <strong>{{ claim()!.coverNameSnapshot }}</strong>
+            </dd>
+
+            <dt>Coverage Limit</dt>
+            <dd>
+              <strong>{{ claim()!.coverageLimit | money: claim()!.currency }}</strong>
+            </dd>
+
+            <dt>Deductible</dt>
+            <dd>{{ claim()!.deductibleAmount | money: claim()!.currency }}</dd>
+
+            <dt>Policy Cover Terms</dt>
+            <dd>{{ claim()!.coverTerms || 'Standard policy wording applies.' }}</dd>
+
+            <dt>Policy Reference</dt>
+            <dd>
+              <a [routerLink]="['/policies', claim()!.policyId]">{{ claim()!.policyNumber }}</a>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Decision Section -->
+    <div class="card p-4 mb-4 border bg-white shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 class="h5 mb-0 fw-bold">Review Decision</h2>
+          <p class="text-muted small mb-0">
+            Assess claim eligibility against the policy risk cover terms.
+          </p>
+        </div>
+        @if (claim()!.review) {
+          <span
+            class="badge"
+            [class.bg-success]="claim()!.review!.decision === 'APPROVED'"
+            [class.bg-danger]="claim()!.review!.decision === 'DENIED'"
+          >
+            {{ claim()!.review!.decision }}
+          </span>
+        }
+      </div>
+
+      @if (claim()!.review) {
+        <div class="p-3 bg-light rounded border">
+          <div class="d-flex justify-content-between mb-2">
+            <strong>Decision: {{ claim()!.review!.decision }}</strong>
+            <small class="text-muted"
+              >Reviewed on {{ claim()!.review!.reviewedAt | date: 'medium' }} by
+              {{ claim()!.review!.reviewedBy }}</small
+            >
+          </div>
+          <p class="mb-0"><strong>Reason:</strong> {{ claim()!.review!.reason }}</p>
+        </div>
+      } @else {
+        <div class="p-4 bg-light-subtle rounded border text-center">
+          <p class="text-muted mb-4">
+            Select a review decision below. You will be prompted to provide a mandatory justification reason.
+          </p>
+          <div class="d-flex justify-content-center gap-3">
+            <button
+              type="button"
+              class="btn btn-outline-success px-4 py-2"
+              (click)="openDecisionModal('APPROVED')"
+              [disabled]="actionLoading()"
+            >
+              Approve
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger px-4 py-2"
+              (click)="openDecisionModal('DENIED')"
+              [disabled]="actionLoading()"
+            >
+              Deny
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Reason Modal -->
+  @if (isModalOpen()) {
+    <div
+      class="modal-backdrop fade show"
+      style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 1050; backdrop-filter: blur(2px);"
+    ></div>
+    <div
+      class="modal show d-block"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="true"
+      style="z-index: 1055;"
+      (keydown.escape)="closeModal()"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+          <div class="modal-header border-bottom">
+            <h5 class="modal-title fw-bold">
+              {{ selectedDecision() === 'APPROVED' ? 'Approve Claim' : 'Deny Claim' }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closeModal()"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form [formGroup]="reasonForm" (ngSubmit)="onSubmitDecision()" novalidate>
+            <div class="modal-body p-4">
+              <p class="text-muted small mb-3">
+                Please enter a mandatory justification reason for
+                <strong>{{ selectedDecision() }}</strong> decision on claim
+                <strong>{{ claim()?.claimReference }}</strong>.
+              </p>
+              <app-form-input
+                label="Decision Reason / Justification"
+                type="textarea"
+                placeholder="Provide explicit justification for this decision..."
+                [required]="true"
+                formControlName="reason"
+                [validationMessages]="{
+                  required: 'A detailed reason is mandatory for the review decision.',
+                  minlength: 'Reason must be at least 5 characters long.',
+                }"
+              />
+            </div>
+            <div class="modal-footer bg-light border-top">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="closeModal()"
+                [disabled]="actionLoading()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn"
+                [class.btn-success]="selectedDecision() === 'APPROVED'"
+                [class.btn-danger]="selectedDecision() === 'DENIED'"
+                [disabled]="reasonForm.invalid || actionLoading()"
+              >
+                @if (actionLoading()) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                }
+                Submit Decision
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+</div>
