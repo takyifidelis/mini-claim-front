@@ -1,0 +1,77 @@
+<div class="detail-page form-page--container">
+  <div class="detail-page__header">
+    <div>
+      <div class="detail-page__title-row">
+        <h3 class="detail-page__title header-title fw-bold">{{ sheet()?.reference }}</h3>
+        <span class="badge bg-light text-dark border">
+          <span class="material-symbols-outlined align-middle fs-6 me-1" aria-hidden="true">lock</span>
+          Immutable
+        </span>
+      </div>
+      <p class="detail-page__description">
+        Effective UTC: {{ sheet()?.effectiveAt | date: 'medium' }}
+      </p>
+    </div>
+    <div class="detail-page__header-actions">
+      <a routerLink="/exchange-rates" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (sheet()) {
+    <div class="detail-page__panel mb-4">
+      <h2 class="detail-page__panel-title">Rate Sheet Overview</h2>
+      <dl class="detail-page__definitions">
+        <dt>Reference</dt>
+        <dd><strong>{{ sheet()!.reference }}</strong></dd>
+
+        <dt>Effective Date / Time</dt>
+        <dd>{{ sheet()!.effectiveAt | date: 'medium' }}</dd>
+
+        <dt>Published Date</dt>
+        <dd>{{ sheet()!.createdAt | date: 'fullDate' }}</dd>
+
+        <dt>Published By</dt>
+        <dd>{{ sheet()!.createdBy }}</dd>
+      </dl>
+    </div>
+
+    <div class="detail-page__panel">
+      <h2 class="detail-page__panel-title">Conversion Entries</h2>
+      <div class="table-responsive">
+        <p-table
+          [value]="sheet()!.entries || []"
+          styleClass="p-datatable-striped"
+          ariaLabel="Exchange Rate Entries Table"
+        >
+          <ng-template #header>
+            <tr>
+              <th>From Currency</th>
+              <th>To Currency</th>
+              <th>Conversion Direction</th>
+              <th>Rate (4 Decimals)</th>
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-entry>
+            <tr>
+              <td><span class="badge bg-primary-subtle text-primary fw-bold">{{ entry.fromCurrency }}</span></td>
+              <td><span class="badge bg-secondary-subtle text-secondary fw-bold">{{ entry.toCurrency }}</span></td>
+              <td>1 {{ entry.fromCurrency }} = {{ entry.rate | rate }} {{ entry.toCurrency }}</td>
+              <td><code>{{ entry.rate | rate }}</code></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  }
+</div>

@@ -13,6 +13,13 @@ export const routes: Routes = [
             (m) => m.RISK_COVERS_ROUTES,
           ),
       },
+      {
+        path: 'exchange-rates',
+        loadChildren: () =>
+          import('./features/exchange-rates/exchange-rates.routes').then(
+            (m) => m.EXCHANGE_RATES_ROUTES,
+          ),
+      },
     ],
   },
 ];

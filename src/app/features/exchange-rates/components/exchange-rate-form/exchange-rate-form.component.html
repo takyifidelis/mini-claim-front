@@ -1,0 +1,123 @@
+<div class="form-page form-page--container">
+  <div class="form-page__header">
+    <div>
+      <h3 class="section-header__title header-title fw-bold">Publish Exchange Rate Sheet</h3>
+      <p class="section-header__description">
+        Publish exchange rates using Ghana Cedis (GHS) as base currency with Bank of Ghana's 4 decimal places standard.
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-page__content" novalidate>
+    @if (serverError()) {
+      <div class="alert alert-danger" role="alert">
+        {{ serverError() }}
+      </div>
+    }
+
+    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+      <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+      <div>
+        <strong>Immutable Record:</strong> Exchange rate records cannot be modified or deleted once published.
+        They will be permanently locked to new policies created during their active period. Existing policies remain assigned to their original exchange rate.
+      </div>
+    </div>
+
+    <!-- Base Currency Rates Fieldset -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset__legend">Exchange Rates (Ghana Cedis Equivalents &bull; 4 Decimals)</legend>
+      <p class="form-fieldset__description">
+        All transactions are based in Ghana Cedis (GHS). Enter the equivalent value in Ghana Cedis (GHS) for <strong>1 USD</strong> and <strong>1 EUR</strong> using up to 4 decimal places. The system will automatically compute bidirectional conversion rates in both directions.
+      </p>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <app-form-input
+            label="GHS equivalent of 1 USD"
+            type="decimal-rate"
+            placeholder="e.g. 15.5000"
+            helperText="1 USD = ? GHS (entered value represents Cedis for 1 USD, max 4 decimals)"
+            [required]="true"
+            formControlName="usdRate"
+            [validationMessages]="{
+              required: 'GHS equivalent of 1 USD is required.',
+              rate: 'Enter a valid rate (up to 4 decimal places).',
+              ratePositive: 'Rate must be strictly greater than 0.'
+            }"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <app-form-input
+            label="GHS equivalent of 1 EUR"
+            type="decimal-rate"
+            placeholder="e.g. 16.8000"
+            helperText="1 EUR = ? GHS (entered value represents Cedis for 1 EUR, max 4 decimals)"
+            [required]="true"
+            formControlName="eurRate"
+            [validationMessages]="{
+              required: 'GHS equivalent of 1 EUR is required.',
+              rate: 'Enter a valid rate (up to 4 decimal places).',
+              ratePositive: 'Rate must be strictly greater than 0.'
+            }"
+          />
+        </div>
+      </div>
+
+      <!-- Live Bidirectional Conversion Preview -->
+      @if (ratePreview()) {
+        <div class="p-3 bg-light border rounded mb-3">
+          <div class="fw-bold text-secondary small mb-2">
+            Calculated Bidirectional Conversion Preview (4 Decimal Places):
+          </div>
+          <div class="row g-2 small">
+            <div class="col-md-4">
+              <span class="badge bg-primary-subtle text-primary me-1">USD &harr; GHS</span>
+              <div>1 USD = <strong>{{ ratePreview()!.usdToGhs }} GHS</strong></div>
+              <div>1 GHS = <strong>{{ ratePreview()!.ghsToUsd }} USD</strong></div>
+            </div>
+            <div class="col-md-4">
+              <span class="badge bg-primary-subtle text-primary me-1">EUR &harr; GHS</span>
+              <div>1 EUR = <strong>{{ ratePreview()!.eurToGhs }} GHS</strong></div>
+              <div>1 GHS = <strong>{{ ratePreview()!.ghsToEur }} EUR</strong></div>
+            </div>
+            <div class="col-md-4">
+              <span class="badge bg-secondary-subtle text-secondary me-1">USD &harr; EUR</span>
+              <div>1 USD = <strong>{{ ratePreview()!.usdToEur }} EUR</strong></div>
+              <div>1 EUR = <strong>{{ ratePreview()!.eurToUsd }} USD</strong></div>
+            </div>
+          </div>
+        </div>
+      }
+    </fieldset>
+
+    <!-- Confirmation Checkbox -->
+    <fieldset class="form-fieldset">
+      <div class="form-fieldset__inputs">
+        <app-form-input
+          label="I confirm that the entered GHS rates are accurate and understand this rate sheet will become the active rate for new policies."
+          type="checkbox"
+          [required]="true"
+          formControlName="confirmed"
+          [validationMessages]="{
+            requiredTrue: 'You must confirm the rate sheet details before publishing.'
+          }"
+        />
+      </div>
+    </fieldset>
+
+    <div class="form-page__footer-buttons">
+      <a routerLink="/exchange-rates" class="btn btn-outline-secondary">Cancel</a>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="form.invalid || submitting()"
+      >
+        @if (submitting()) {
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        }
+        <span>Update Rates</span>
+      </button>
+    </div>
+  </form>
+</div>
