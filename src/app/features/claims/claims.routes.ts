@@ -8,4 +8,11 @@ export const CLAIMS_ROUTES: Routes = [
         (m) => m.ClaimListComponent,
       ),
   },
+  {
+    path: 'new',
+    loadComponent: () =>
+      import('./components/claim-form/claim-form.component').then(
+        (m) => m.ClaimFormComponent,
+      ),
+  },
 ];
