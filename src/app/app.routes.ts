@@ -7,6 +7,16 @@ export const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'claims',
+        pathMatch: 'full',
+      },
+      {
+        path: 'claims',
+        loadChildren: () =>
+          import('./features/claims/claims.routes').then((m) => m.CLAIMS_ROUTES),
+      },
+      {
         path: 'policies',
         loadChildren: () =>
           import('./features/policies/policies.routes').then((m) => m.POLICIES_ROUTES),
@@ -26,5 +36,9 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'claims',
   },
 ];

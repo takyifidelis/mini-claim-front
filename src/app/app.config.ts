@@ -10,6 +10,7 @@ import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
 import { RiskCoversState } from './features/risk-covers/risk-covers.state';
 import { ExchangeRatesState } from './features/exchange-rates/exchange-rates.state';
 import { PoliciesState } from './features/policies/policies.state';
+import { ClaimsState } from './features/claims/claims.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,6 +28,6 @@ export const appConfig: ApplicationConfig = {
       license:
         'eyJpZCI6IjczYTRiNDExLWY3ODktNDAzNC1iMGMyLTJkYjNhOWM5NzM0ZSIsInByb2R1Y3QiOiJwcmltZXVpIiwidGllciI6ImNvbW11bml0eSIsInR5cGUiOiJkZXYiLCJpYXQiOjE3ODg0Nzk5MDMsImV4cCI6MTgyMDAxNTkwM30.5unb3_0FNO2zUTJIykJQZw40NqsLnn3W-0Mmv_mY9XzIhBFWAecPOJSAYyoKf7zeL8EPlD_eg3oPE6rI3h4dCQ',
     }),
-    provideStore([RiskCoversState, ExchangeRatesState, PoliciesState]),
+    provideStore([RiskCoversState, ExchangeRatesState, PoliciesState, ClaimsState]),
   ],
 };
