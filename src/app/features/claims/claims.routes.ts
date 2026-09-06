@@ -23,6 +23,13 @@ export const CLAIMS_ROUTES: Routes = [
       ),
   },
   {
+    path: 'settlements',
+    loadComponent: () =>
+      import('./components/claim-settlement-list/claim-settlement-list.component').then(
+        (m) => m.ClaimSettlementListComponent,
+      ),
+  },
+  {
     path: 'new',
     loadComponent: () =>
       import('./components/claim-form/claim-form.component').then(
@@ -41,6 +48,13 @@ export const CLAIMS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/claim-payout/claim-payout.component').then(
         (m) => m.ClaimPayoutComponent,
+      ),
+  },
+  {
+    path: ':id/settle',
+    loadComponent: () =>
+      import('./components/claim-settlement/claim-settlement.component').then(
+        (m) => m.ClaimSettlementComponent,
       ),
   },
 ];

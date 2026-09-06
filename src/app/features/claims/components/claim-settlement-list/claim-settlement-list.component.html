@@ -1,0 +1,149 @@
+<div class="list-page">
+  <div class="list-page__header">
+    <div>
+      <h3 class="list-page__header-title header-title fw-bold">Payment Settlement</h3>
+      <p class="list-page__header-description">
+        Manage and record settlement payments for claims with outstanding balances.
+      </p>
+    </div>
+  </div>
+
+  <div class="list-page__content">
+    <!-- Filter Toolbar -->
+    <div class="filter-bar">
+      <div class="filter-bar__field filter-bar__field--grow">
+        <app-form-input
+          label="Search"
+          placeholder="Search reference, policy #, insured..."
+          [formControl]="searchControl"
+          (blur)="applySearch()"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Currency"
+          type="select"
+          [options]="currencyOptions"
+          [formControl]="currencyControl"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Notified From"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          [formControl]="dateFromControl"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Notified To"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          [formControl]="dateToControl"
+        />
+      </div>
+      <div class="filter-bar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearFilters()"
+          [disabled]="loading()"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-danger m-3" role="alert">
+        {{ error() }}
+        <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="retry()">
+          Retry
+        </button>
+      </div>
+    }
+
+    <!-- PrimeNG Table -->
+    <div class="table-responsive">
+      <p-table
+        [value]="items()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="onLazyLoad($event)"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [totalRecords]="total()"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="loading()"
+        [first]="(page() - 1) * pageSize()"
+        styleClass="p-datatable-striped"
+        ariaLabel="Payment Settlement Table"
+      >
+        <ng-template #header>
+          <tr>
+            <th pSortableColumn="claimReference">Claim Ref <p-sort-icon field="claimReference" /></th>
+            <th pSortableColumn="policyNumber">Policy # <p-sort-icon field="policyNumber" /></th>
+            <th pSortableColumn="insuredName">Insured <p-sort-icon field="insuredName" /></th>
+            <th>Cover</th>
+            <th>Approved Payout</th>
+            <th>Total Paid</th>
+            <th>Outstanding Balance</th>
+            <th pSortableColumn="status">Status <p-sort-icon field="status" /></th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-claim>
+          <tr>
+            <td><strong>{{ claim.claimReference }}</strong></td>
+            <td>
+              <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
+            </td>
+            <td>{{ claim.insuredName }}</td>
+            <td><span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span></td>
+            <td>{{ claim.approvedPayoutAmount | money: claim.currency }}</td>
+            <td>{{ claim.totalPaid | money: claim.currency }}</td>
+            <td>
+              @if (claim.outstandingBalance === null) {
+                <span class="text-muted">—</span>
+              } @else if (isOverpaid(claim.outstandingBalance)) {
+                <span class="text-danger fw-bold">
+                  -{{ claim.overpaidAmount | money: claim.currency }} (Overpaid)
+                </span>
+              } @else if (claim.outstandingBalance === '0.00') {
+                <span class="text-success fw-bold">Fully Paid</span>
+              } @else {
+                <strong class="text-primary">{{ claim.outstandingBalance | money: claim.currency }}</strong>
+              }
+            </td>
+            <td><app-status-badge [status]="claim.status" /></td>
+            <td class="text-end">
+              <a
+                [routerLink]="['/claims', claim.id, 'settle']"
+                class="btn btn-sm btn-outline-success"
+                [attr.aria-label]="'Record payment for ' + claim.claimReference"
+              >
+                Record Payment
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="9">
+              <app-empty-state
+                icon="payments"
+                title="No outstanding payments"
+                description="There are currently no claims with outstanding balances awaiting settlement."
+                [actionLabel]="hasActiveFilters() ? 'Clear Filters' : ''"
+                (actionClicked)="clearFilters()"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
