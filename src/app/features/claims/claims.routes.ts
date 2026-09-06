@@ -16,6 +16,13 @@ export const CLAIMS_ROUTES: Routes = [
       ),
   },
   {
+    path: 'payouts',
+    loadComponent: () =>
+      import('./components/claim-payout-list/claim-payout-list.component').then(
+        (m) => m.ClaimPayoutListComponent,
+      ),
+  },
+  {
     path: 'new',
     loadComponent: () =>
       import('./components/claim-form/claim-form.component').then(
@@ -27,6 +34,13 @@ export const CLAIMS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/claim-review/claim-review.component').then(
         (m) => m.ClaimReviewComponent,
+      ),
+  },
+  {
+    path: ':id/payout',
+    loadComponent: () =>
+      import('./components/claim-payout/claim-payout.component').then(
+        (m) => m.ClaimPayoutComponent,
       ),
   },
 ];

@@ -1,0 +1,143 @@
+<div class="list-page">
+  <div class="list-page__header">
+    <div>
+      <h3 class="list-page__header-title header-title fw-bold">Approved Payouts</h3>
+      <p class="list-page__header-description">
+        Manage and set approved payout amounts for approved claims awaiting settlement terms.
+      </p>
+    </div>
+  </div>
+
+  <div class="list-page__content">
+    <!-- Filter Toolbar -->
+    <div class="filter-bar">
+      <div class="filter-bar__field filter-bar__field--grow">
+        <app-form-input
+          label="Search"
+          placeholder="Search reference, policy #, insured..."
+          [formControl]="searchControl"
+          (blur)="applySearch()"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Currency"
+          type="select"
+          [options]="currencyOptions"
+          [formControl]="currencyControl"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Notified From"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          [formControl]="dateFromControl"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Notified To"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          [formControl]="dateToControl"
+        />
+      </div>
+      <div class="filter-bar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearFilters()"
+          [disabled]="loading()"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-danger m-3" role="alert">
+        {{ error() }}
+        <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="retry()">
+          Retry
+        </button>
+      </div>
+    }
+
+    <!-- PrimeNG Table -->
+    <div class="table-responsive">
+      <p-table
+        [value]="items()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="onLazyLoad($event)"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [totalRecords]="total()"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="loading()"
+        [first]="(page() - 1) * pageSize()"
+        styleClass="p-datatable-striped"
+        ariaLabel="Approved Payouts Table"
+      >
+        <ng-template #header>
+          <tr>
+            <th pSortableColumn="claimReference">Claim Ref <p-sort-icon field="claimReference" /></th>
+            <th pSortableColumn="policyNumber">Policy # <p-sort-icon field="policyNumber" /></th>
+            <th pSortableColumn="insuredName">Insured <p-sort-icon field="insuredName" /></th>
+            <th>Cover</th>
+            <th pSortableColumn="lossDate">Loss Date <p-sort-icon field="lossDate" /></th>
+            <th>Est. Loss</th>
+            <th>Approved Payout</th>
+            <th pSortableColumn="status">Status <p-sort-icon field="status" /></th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-claim>
+          <tr>
+            <td><strong>{{ claim.claimReference }}</strong></td>
+            <td>
+              <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
+            </td>
+            <td>{{ claim.insuredName }}</td>
+            <td><span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span></td>
+            <td>{{ claim.lossDate | date: 'shortDate' }}</td>
+            <td>{{ claim.estimatedLossAmount | money: claim.currency }}</td>
+            <td>
+              @if (claim.approvedPayoutAmount !== null) {
+                <strong>{{ claim.approvedPayoutAmount | money: claim.currency }}</strong>
+              } @else {
+                <span class="text-muted">Not set</span>
+              }
+            </td>
+            <td><app-status-badge [status]="claim.status" /></td>
+            <td class="text-end">
+              <a
+                [routerLink]="['/claims', claim.id, 'payout']"
+                class="btn btn-sm btn-outline-success"
+                [attr.aria-label]="'Set payout for ' + claim.claimReference"
+              >
+                {{ claim.approvedPayoutAmount !== null ? 'Edit Payout' : 'Set Payout' }}
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="9">
+              <app-empty-state
+                icon="account_balance_wallet"
+                title="No approved claims awaiting payout"
+                description="There are currently no approved claims in Reserved / Not Settled status matching your filters."
+                [actionLabel]="hasActiveFilters() ? 'Clear Filters' : ''"
+                (actionClicked)="clearFilters()"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
