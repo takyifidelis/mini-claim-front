@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  &__label,
+  &__checkbox label {
+    color: #344054;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  &__control {
+    width: 100%;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__required,
+  &__error {
+    color: var(--p-form-field-invalid-color, #b42318);
+  }
+
+  &__hint,
+  &__error {
+    font-size: 0.75rem;
+  }
+
+  &__hint {
+    color: var(--p-text-muted-color, #667085);
+  }
+}

@@ -1,0 +1,186 @@
+<div class="form-input">
+  @if (type() !== 'checkbox') {
+    <label class="form-input__label" [id]="labelId()" [for]="controlId()">
+      {{ label() }}
+      @if (isRequired) {
+        <span class="form-input__required" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  @switch (type()) {
+    @case ('textarea') {
+      <textarea
+        class="form-input__control"
+        [id]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readOnly]="readOnly()"
+        [attr.aria-required]="isRequired"
+        [attr.aria-describedby]="describedBy"
+        [invalid]="showError"
+        (blur)="markAsTouched()"
+        rows="4"
+        fluid
+        pTextarea
+      ></textarea>
+    }
+    @case ('date') {
+      <p-datepicker
+        styleClass="form-input__control"
+        [inputId]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readonlyInput]="readOnly()"
+        [ariaLabelledBy]="labelId()"
+        [pt]="datePickerPt"
+        [class.p-invalid]="showError"
+        [showIcon]="true"
+        [showClear]="!readOnly()"
+        dataType="string"
+        dateFormat="yy-mm-dd"
+        (onBlur)="markAsTouched()"
+        appendTo="body"
+      />
+    }
+    @case ('money') {
+      <input
+        class="form-input__control"
+        [id]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readOnly]="readOnly()"
+        [attr.aria-required]="isRequired"
+        [attr.aria-describedby]="describedBy"
+        [invalid]="showError"
+        (blur)="markAsTouched()"
+        inputmode="decimal"
+        type="text"
+        fluid
+        pInputText
+      />
+    }
+    @case ('decimal-rate') {
+      <input
+        class="form-input__control"
+        [id]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readOnly]="readOnly()"
+        [attr.aria-required]="isRequired"
+        [attr.aria-describedby]="describedBy"
+        [invalid]="showError"
+        (blur)="markAsTouched()"
+        inputmode="decimal"
+        type="text"
+        fluid
+        pInputText
+      />
+    }
+    @case ('currency') {
+      <p-select
+        styleClass="form-input__control"
+        [inputId]="controlId()"
+        [formControl]="internalControl"
+        [options]="options()"
+        [placeholder]="placeholder()"
+        [readonly]="readOnly()"
+        [ariaLabelledBy]="labelId()"
+        [pt]="selectPt"
+        [class.p-invalid]="showError"
+        [filter]="filter()"
+        [filterBy]="filterBy()"
+        [showClear]="showClear() && !readOnly()"
+        (onBlur)="markAsTouched()"
+        optionLabel="name"
+        optionValue="id"
+        appendTo="body"
+      />
+    }
+    @case ('select') {
+      <p-select
+        styleClass="form-input__control"
+        [inputId]="controlId()"
+        [formControl]="internalControl"
+        [options]="options()"
+        [placeholder]="placeholder()"
+        [readonly]="readOnly()"
+        [ariaLabelledBy]="labelId()"
+        [pt]="selectPt"
+        [class.p-invalid]="showError"
+        [filter]="filter()"
+        [filterBy]="filterBy()"
+        [showClear]="showClear() && !readOnly()"
+        (onBlur)="markAsTouched()"
+        optionLabel="name"
+        optionValue="id"
+        appendTo="body"
+      />
+    }
+    @case ('multi-select') {
+      <p-multiselect
+        styleClass="form-input__control"
+        [inputId]="controlId()"
+        [formControl]="internalControl"
+        [options]="options()"
+        [placeholder]="placeholder()"
+        [readonly]="readOnly()"
+        [ariaLabelledBy]="labelId()"
+        [pt]="multiSelectPt"
+        [class.p-invalid]="showError"
+        [filter]="filter()"
+        [filterBy]="filterBy()"
+        [showClear]="showClear() && !readOnly()"
+        (onBlur)="markAsTouched()"
+        optionLabel="name"
+        optionValue="id"
+        display="chip"
+        fluid
+        appendTo="body"
+      />
+    }
+    @case ('checkbox') {
+      <div class="form-input__checkbox">
+        <p-checkbox
+          [inputId]="controlId()"
+          [formControl]="internalControl"
+          [binary]="true"
+          [readonly]="readOnly()"
+          [ariaLabelledBy]="labelId()"
+          [pt]="checkboxPt"
+          [class.p-invalid]="showError"
+          (onBlur)="markAsTouched()"
+        />
+        <label [id]="labelId()" [for]="controlId()">
+          {{ label() }}
+          @if (isRequired) {
+            <span class="form-input__required" aria-hidden="true">*</span>
+          }
+        </label>
+      </div>
+    }
+    @default {
+      <input
+        class="form-input__control"
+        [id]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readOnly]="readOnly()"
+        [attr.aria-required]="isRequired"
+        [attr.aria-describedby]="describedBy"
+        [invalid]="showError"
+        (blur)="markAsTouched()"
+        type="text"
+        fluid
+        pInputText
+      />
+    }
+  }
+
+  @if (helperText()) {
+    <small class="form-input__hint" [id]="hintId()">{{ helperText() }}</small>
+  }
+  @if (showError) {
+    <small class="form-input__error" [id]="errorId()" role="alert">{{ errorMessage }}</small>
+  }
+</div>
