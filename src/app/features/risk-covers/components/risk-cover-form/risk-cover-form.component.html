@@ -1,0 +1,75 @@
+<div class="form-page form-page--container">
+  <div class="form-page__header">
+    <div>
+      <h3 class="section-header__title header-title fw-bold">Create Risk Cover</h3>
+      <p class="section-header__description">
+        Define a new standardized insurance risk cover in the catalogue.
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-page__content" novalidate>
+    @if (serverError()) {
+      <div class="alert alert-danger" role="alert">
+        {{ serverError() }}
+      </div>
+    }
+
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset__legend">Cover Details</legend>
+      <p class="form-fieldset__description">
+        Specify the unique code, display name, and scope of protection.
+      </p>
+
+      <div class="form-fieldset__inputs">
+        <app-form-input
+          label="Cover Code"
+          placeholder="e.g. ACC_DAMAGE, THEFT, FLOOD"
+          helperText="Unique uppercase identifier for this risk cover"
+          [required]="true"
+          formControlName="code"
+          [validationMessages]="{
+            required: 'Risk cover code is required.',
+            maxlength: 'Code cannot exceed 50 characters.',
+          }"
+        />
+
+        <app-form-input
+          label="Cover Name"
+          placeholder="e.g. Accidental Damage"
+          [required]="true"
+          formControlName="name"
+          [validationMessages]="{
+            required: 'Risk cover name is required.',
+            maxlength: 'Name cannot exceed 200 characters.',
+          }"
+        />
+
+        <app-form-input
+          label="Description"
+          type="textarea"
+          placeholder="Describe the covered events and perils..."
+          [required]="true"
+          formControlName="description"
+          [validationMessages]="{
+            required: 'Description is required.',
+          }"
+        />
+      </div>
+    </fieldset>
+
+    <div class="form-page__footer-buttons">
+      <a routerLink="/risk-covers" class="btn btn-outline-secondary">Cancel</a>
+      <button
+        type="submit"
+        class="btn btn-success d-inline-flex align-items-center gap-1"
+        [disabled]="form.invalid || submitting()"
+      >
+        @if (submitting()) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        }
+        <span>Create Risk Cover</span>
+      </button>
+    </div>
+  </form>
+</div>

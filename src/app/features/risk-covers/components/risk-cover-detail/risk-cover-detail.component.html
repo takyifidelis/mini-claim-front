@@ -1,0 +1,59 @@
+<div class="detail-page form-page--container">
+  <div class="detail-page__header">
+    <div>
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb-nav__list">
+          <li class="breadcrumb-nav__item"><a routerLink="/risk-covers">Risk Covers</a></li>
+          <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
+            {{ cover()?.code || 'Detail' }}
+          </li>
+        </ol>
+      </nav>
+      <div class="detail-page__title-row">
+        <h3 class="detail-page__title header-title fw-bold">{{ cover()?.name }}</h3>
+        @if (cover()?.status) {
+          <app-status-badge [status]="cover()!.status" />
+        }
+      </div>
+      <p class="detail-page__description">Risk Cover Code: <code>{{ cover()?.code }}</code></p>
+    </div>
+    <div class="detail-page__header-actions">
+      <a routerLink="/risk-covers" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (cover()) {
+    <div class="detail-page__panel">
+      <h2 class="detail-page__panel-title">Cover Information</h2>
+      <dl class="detail-page__definitions">
+        <dt>Code</dt>
+        <dd><strong>{{ cover()!.code }}</strong></dd>
+
+        <dt>Name</dt>
+        <dd>{{ cover()!.name }}</dd>
+
+        <dt>Description</dt>
+        <dd>{{ cover()!.description }}</dd>
+
+        <dt>Status</dt>
+        <dd><app-status-badge [status]="cover()!.status" /></dd>
+
+        <dt>Created Date</dt>
+        <dd>{{ cover()!.createdAt | date: 'fullDate' }}</dd>
+
+        <dt>Created By</dt>
+        <dd>{{ cover()!.createdBy }}</dd>
+      </dl>
+    </div>
+  }
+</div>

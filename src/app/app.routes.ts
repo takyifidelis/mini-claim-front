@@ -5,6 +5,14 @@ export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    children: [],
+    children: [
+      {
+        path: 'risk-covers',
+        loadChildren: () =>
+          import('./features/risk-covers/risk-covers.routes').then(
+            (m) => m.RISK_COVERS_ROUTES,
+          ),
+      },
+    ],
   },
 ];
