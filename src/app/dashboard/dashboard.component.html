@@ -1,0 +1,136 @@
+<div class="dashboard-layout">
+  <!-- Top Navigation Header -->
+  <app-navbar />
+
+  <div class="dashboard-body">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" aria-label="Main Navigation">
+      <nav class="sidebar__nav">
+        <!-- Section: Overview -->
+        <div class="nav-section-title">Overview</div>
+        <a
+          routerLink="/claims"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          <span>Claims Overview</span>
+        </a>
+
+        <!-- Section: Claims Management -->
+        <div class="nav-section-title">Claims Management</div>
+        <button
+          type="button"
+          class="nav-group-header"
+          (click)="toggleClaims()"
+          [attr.aria-expanded]="claimsExpanded()"
+          aria-controls="nav-group-claims"
+        >
+          <span class="group-title">
+            <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
+            <span>Claims</span>
+          </span>
+          <span
+            class="material-symbols-outlined expand-icon"
+            [class.rotate-180]="claimsExpanded()"
+            aria-hidden="true"
+          >
+            keyboard_arrow_down
+          </span>
+        </button>
+        @if (claimsExpanded()) {
+          <div class="nav-sub-group" id="nav-group-claims">
+            <a
+              routerLink="/claims"
+              routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="nav-sub-link"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">format_list_bulleted</span>
+              <span>Register & List</span>
+            </a>
+            <a routerLink="/claims/new" routerLinkActive="active-link" class="nav-sub-link">
+              <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
+              <span>Register Claim</span>
+            </a>
+            <a routerLink="/claims/review" routerLinkActive="active-link" class="nav-sub-link">
+              <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>
+              <span>Claims Review</span>
+            </a>
+            <a routerLink="/claims/payouts" routerLinkActive="active-link" class="nav-sub-link">
+              <span class="material-symbols-outlined" aria-hidden="true">account_balance_wallet</span>
+              <span>Approved Payouts</span>
+            </a>
+            <a routerLink="/claims/settlements" routerLinkActive="active-link" class="nav-sub-link">
+              <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+              <span>Payment Settlement</span>
+            </a>
+          </div>
+        }
+
+        <!-- Section: Policies -->
+        <div class="nav-section-title">Policy Settings</div>
+        <button
+          type="button"
+          class="nav-group-header"
+          (click)="togglePolicies()"
+          [attr.aria-expanded]="policiesExpanded()"
+          aria-controls="nav-group-policies"
+        >
+          <span class="group-title">
+            <span class="material-symbols-outlined" aria-hidden="true">policy</span>
+            <span>Policies</span>
+          </span>
+          <span
+            class="material-symbols-outlined expand-icon"
+            [class.rotate-180]="policiesExpanded()"
+            aria-hidden="true"
+          >
+            keyboard_arrow_down
+          </span>
+        </button>
+        @if (policiesExpanded()) {
+          <div class="nav-sub-group" id="nav-group-policies">
+            <a
+              routerLink="/policies"
+              routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="nav-sub-link"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">list_alt</span>
+              <span>All Policies</span>
+            </a>
+            <a routerLink="/policies/new" routerLinkActive="active-link" class="nav-sub-link">
+              <span class="material-symbols-outlined" aria-hidden="true">add_box</span>
+              <span>Create Policy</span>
+            </a>
+            <a
+              routerLink="/risk-covers"
+              routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="nav-sub-link"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+              <span>Covers Catalog</span>
+            </a>
+          </div>
+        }
+        <a
+          routerLink="/exchange-rates"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-sub-link"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">table_chart</span>
+          <span>Rate Sheets</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area" id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
