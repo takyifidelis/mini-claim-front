@@ -1,0 +1,133 @@
+<div class="detail-page form-page--container">
+  <div class="detail-page__header">
+    <div>
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb-nav__list">
+          <li class="breadcrumb-nav__item"><a routerLink="/policies">Policies</a></li>
+          <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
+            {{ policy()?.policyNumber || 'Detail' }}
+          </li>
+        </ol>
+      </nav>
+      <div class="detail-page__title-row">
+        <h3 class="detail-page__title header-title fw-bold">{{ policy()?.policyNumber }}</h3>
+        @if (policy()?.status) {
+          <app-status-badge [status]="policy()!.status" />
+        }
+      </div>
+      <p class="detail-page__description">
+        Insured: <strong>{{ policy()?.insuredName }}</strong> | Type: {{ policy()?.policyType }}
+      </p>
+    </div>
+    <div class="detail-page__header-actions">
+      <a routerLink="/claims/new" class="btn btn-success">
+        <span>Register Claim</span>
+      </a>
+      <a routerLink="/policies" class="btn btn-outline-secondary">Back to Policies</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (policy()) {
+    <!-- Policy Core Information -->
+    <div class="detail-page__panel mb-4">
+      <h2 class="detail-page__panel-title">Policy Information</h2>
+      <dl class="detail-page__definitions">
+        <dt>Policy Number</dt>
+        <dd><strong>{{ policy()!.policyNumber }}</strong></dd>
+
+        <dt>Insured Name</dt>
+        <dd>{{ policy()!.insuredName }}</dd>
+
+        <dt>Product / Type</dt>
+        <dd>{{ policy()!.policyType }}</dd>
+
+        <dt>Currency</dt>
+        <dd><span class="badge bg-primary-subtle text-primary fw-bold">{{ policy()!.currency }}</span></dd>
+
+        <dt>Total Sum Insured</dt>
+        <dd><strong>{{ policy()!.sumInsured | money: policy()!.currency }}</strong></dd>
+
+        <dt>Premium Amount</dt>
+        <dd>{{ policy()!.premiumAmount | money: policy()!.currency }}</dd>
+
+        <dt>Coverage Period</dt>
+        <dd>{{ policy()!.startDate | date: 'mediumDate' }} &ndash; {{ policy()!.endDate | date: 'mediumDate' }}</dd>
+
+        <dt>Status</dt>
+        <dd><app-status-badge [status]="policy()!.status" /></dd>
+
+        <dt>Locked Rate Sheet</dt>
+        <dd>
+          <a [routerLink]="['/exchange-rates', policy()!.exchangeRateSheetId]">
+            {{ policy()!.exchangeRateSheet?.reference || policy()!.exchangeRateSheetId }}
+          </a>
+        </dd>
+
+        <dt>Created Date</dt>
+        <dd>{{ policy()!.createdAt | date: 'fullDate' }}</dd>
+
+        <dt>Created By</dt>
+        <dd>{{ policy()!.createdBy }}</dd>
+      </dl>
+    </div>
+
+    <!-- Assigned Risk Covers Table -->
+    <div class="detail-page__panel mb-4">
+      <h2 class="detail-page__panel-title">Assigned Risk Covers ({{ policy()!.covers.length }})</h2>
+      <div class="table-responsive">
+        <p-table
+          [value]="policy()!.covers"
+          styleClass="p-datatable-striped"
+          ariaLabel="Assigned Covers Table"
+        >
+          <ng-template #header>
+            <tr>
+              <th>Cover Code</th>
+              <th>Cover Name</th>
+              <th>Coverage Limit</th>
+              <th>Deductible Amount</th>
+              <th>Specific Terms</th>
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-cover>
+            <tr>
+              <td><strong>{{ cover.coverCodeSnapshot }}</strong></td>
+              <td>{{ cover.coverNameSnapshot }}</td>
+              <td><strong>{{ cover.coverageLimit | money: policy()!.currency }}</strong></td>
+              <td>{{ cover.deductibleAmount | money: policy()!.currency }}</td>
+              <td>{{ cover.terms || '—' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Locked Exchange Rate Details -->
+    @if (policy()!.exchangeRateSheet) {
+      <div class="detail-page__panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="detail-page__panel-title mb-0">Locked Exchange Rate Sheet</h2>
+          <span class="badge bg-light text-dark border">
+            <span class="material-symbols-outlined align-middle fs-6 me-1" aria-hidden="true">lock</span>
+            Locked to Policy
+          </span>
+        </div>
+        <p class="small text-muted">
+          Reference: <strong>{{ policy()!.exchangeRateSheet!.reference }}</strong> |
+          Effective: {{ policy()!.exchangeRateSheet!.effectiveAt | date: 'medium' }}
+        </p>
+      </div>
+    }
+  }
+</div>

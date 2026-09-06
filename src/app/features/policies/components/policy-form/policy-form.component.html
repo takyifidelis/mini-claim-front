@@ -1,0 +1,244 @@
+<div class="form-page form-page--container">
+  <div class="form-page__header">
+    <div>
+      <h3 class="section-header__title header-title fw-bold">Create Insurance Policy</h3>
+      <p class="section-header__description">
+        Register a new policy, assign catalogue risk covers with coverage limits, and lock current exchange rates.
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onOpenConfirm()" class="form-page__content" novalidate>
+    @if (serverError()) {
+      <div class="alert alert-danger" role="alert">
+        {{ serverError() }}
+      </div>
+    }
+
+    <!-- Active Exchange Rate Lock Information -->
+    <div class="card p-3 border bg-light">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="material-symbols-outlined text-primary" aria-hidden="true">lock</span>
+        <h3 class="h6 mb-0 fw-bold">Active Exchange Rate Sheet Lock</h3>
+      </div>
+      @if (currentExchangeRate()) {
+        <p class="small text-muted mb-2">
+          This policy will be locked to published rate sheet
+          <strong>{{ currentExchangeRate()!.reference }}</strong> (effective {{ currentExchangeRate()!.effectiveAt | date: 'medium' }}).
+          All multi-currency claim conversions for this policy will use these locked rates.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          @for (entry of currentExchangeRate()!.entries; track entry.fromCurrency + '-' + entry.toCurrency) {
+            <span class="badge bg-white text-dark border small">
+              1 {{ entry.fromCurrency }} = {{ entry.rate | rate }} {{ entry.toCurrency }}
+            </span>
+          }
+        </div>
+      } @else {
+        <div class="alert alert-warning mb-0 small">
+          No active exchange rate sheet found. Please publish an exchange rate sheet before creating policies.
+        </div>
+      }
+    </div>
+
+    <!-- Policy Core Details -->
+    <fieldset class="form-fieldset">
+      <legend class="form-fieldset__legend">Policy Information</legend>
+      <div class="form-fieldset__inputs">
+        <app-form-input
+          label="Insured Person / Entity Name"
+          placeholder="e.g. Acme Logistics Ltd or John Doe"
+          [required]="true"
+          formControlName="insuredName"
+          [validationMessages]="{
+            required: 'Insured name is required.',
+            maxlength: 'Cannot exceed 200 characters.'
+          }"
+        />
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <app-form-input
+              label="Policy Type / Line"
+              placeholder="e.g. Commercial Property, Marine Cargo"
+              [required]="true"
+              formControlName="policyType"
+              [validationMessages]="{
+                required: 'Policy type is required.'
+              }"
+            />
+          </div>
+          <div class="col-md-6">
+            <app-form-input
+              label="Policy Currency"
+              type="select"
+              [options]="currencyOptions"
+              [required]="true"
+              formControlName="currency"
+            />
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <app-form-input
+              label="Start Date"
+              type="date"
+              placeholder="YYYY-MM-DD"
+              [required]="true"
+              formControlName="startDate"
+            />
+          </div>
+          <div class="col-md-6">
+            <app-form-input
+              label="End Date"
+              type="date"
+              placeholder="YYYY-MM-DD"
+              [required]="true"
+              formControlName="endDate"
+            />
+          </div>
+        </div>
+
+        @if (form.errors?.['dateRangeInvalid']) {
+          <div class="text-danger small">
+            End date must be on or after the start date.
+          </div>
+        }
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <app-form-input
+              label="Total Sum Insured"
+              type="money"
+              placeholder="e.g. 100000.00"
+              helperText="Total insurance coverage in policy currency"
+              [required]="true"
+              formControlName="sumInsured"
+              [validationMessages]="{
+                required: 'Sum insured is required.',
+                money: 'Enter a valid monetary amount.'
+              }"
+            />
+          </div>
+          <div class="col-md-6">
+            <app-form-input
+              label="Premium Amount (Optional)"
+              type="money"
+              placeholder="e.g. 2500.00"
+              formControlName="premiumAmount"
+              [validationMessages]="{
+                money: 'Enter a valid monetary amount.'
+              }"
+            />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Assigned Risk Covers Section -->
+    <fieldset class="form-fieldset">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <legend class="form-fieldset__legend mb-0">Assigned Risk Covers</legend>
+          <p class="form-fieldset__description">Assign at least one active catalogue risk cover to this policy.</p>
+        </div>
+        <button
+          type="button"
+          class="btn btn-outline-success btn-sm"
+          (click)="addCover()"
+          [disabled]="selectableCoverOptions().length === 0"
+        >
+          <span>Add Cover</span>
+        </button>
+      </div>
+
+      <div formArrayName="covers" class="d-flex flex-column gap-3">
+        @for (c of coversArray.controls; track $index; let i = $index) {
+          <div class="card p-3 border bg-white shadow-sm" [formGroupName]="i">
+            <div class="row g-3 align-items-end">
+              <div class="col-lg-3 col-md-6">
+                <app-form-input
+                  label="Risk Cover"
+                  type="select"
+                  [options]="selectableCoverOptions()"
+                  [required]="true"
+                  formControlName="riskCoverId"
+                  [validationMessages]="{
+                    required: 'Please select a risk cover from the catalogue.'
+                  }"
+                />
+              </div>
+              <div class="col-lg-2 col-md-6">
+                <app-form-input
+                  label="Coverage Limit"
+                  type="money"
+                  placeholder="e.g. 50000.00"
+                  [required]="true"
+                  formControlName="coverageLimit"
+                  [validationMessages]="{
+                    required: 'Coverage limit is required.',
+                    money: 'Enter a valid positive monetary amount.',
+                    moneyPositive: 'Coverage limit must be strictly greater than 0.00.'
+                  }"
+                />
+              </div>
+              <div class="col-lg-2 col-md-6">
+                <app-form-input
+                  label="Deductible"
+                  type="money"
+                  placeholder="e.g. 500.00"
+                  formControlName="deductibleAmount"
+                  [validationMessages]="{
+                    money: 'Enter a valid non-negative monetary amount.'
+                  }"
+                />
+              </div>
+              <div class="col-lg-4 col-md-6">
+                <app-form-input
+                  label="Policy Cover Terms (Optional)"
+                  placeholder="e.g. Subject to 10% co-insurance for flood damages"
+                  formControlName="terms"
+                />
+              </div>
+              <div class="col-lg-1 col-md-12 d-flex justify-content-end mb-3">
+                @if (coversArray.length > 1) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm w-100"
+                    (click)="removeCover(i)"
+                    aria-label="Remove cover assignment"
+                  >
+                    Remove
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <div class="form-page__footer-buttons">
+      <a routerLink="/policies" class="btn btn-outline-secondary">Cancel</a>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="form.invalid || submitting() || !currentExchangeRate()"
+      >
+        <span>Review & Create Policy</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="confirmDialogOpen()"
+    title="Confirm Policy Creation"
+    message="Are you sure you want to create this policy? The current exchange rate sheet will be permanently locked to this policy."
+    confirmLabel="Confirm & Create"
+    [loading]="submitting()"
+    (confirm)="onConfirmCreate()"
+    (cancel)="confirmDialogOpen.set(false)"
+  />
+</div>

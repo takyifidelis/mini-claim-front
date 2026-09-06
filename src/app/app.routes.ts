@@ -7,6 +7,11 @@ export const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
+        path: 'policies',
+        loadChildren: () =>
+          import('./features/policies/policies.routes').then((m) => m.POLICIES_ROUTES),
+      },
+      {
         path: 'risk-covers',
         loadChildren: () =>
           import('./features/risk-covers/risk-covers.routes').then(

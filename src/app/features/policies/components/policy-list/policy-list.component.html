@@ -1,0 +1,150 @@
+<div class="list-page">
+  <div class="list-page__header">
+    <div>
+      <h3 class="list-page__header-title header-title fw-bold">Insurance Policies</h3>
+      <p class="list-page__header-description">
+        Active and archived insurance policies with assigned risk covers and locked exchange rates.
+      </p>
+    </div>
+    <div class="list-page__header-actions">
+      <a routerLink="/policies/new" class="btn btn-success">
+        <span>New Policy</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="list-page__content">
+    <!-- Filter Toolbar -->
+    <div class="filter-bar">
+      <div class="filter-bar__field filter-bar__field--grow">
+        <app-form-input
+          label="Search"
+          placeholder="Search by policy number or insured name..."
+          [formControl]="searchControl"
+          (blur)="applySearch()"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Currency"
+          type="select"
+          [options]="currencyOptions"
+          [formControl]="currencyControl"
+        />
+      </div>
+      <div class="filter-bar__field">
+        <app-form-input
+          label="Status"
+          type="select"
+          [options]="statusOptions"
+          [formControl]="statusControl"
+        />
+      </div>
+      <div class="filter-bar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearFilters()"
+          [disabled]="loading()"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-danger m-3" role="alert">
+        {{ error() }}
+        <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="retry()">
+          Retry
+        </button>
+      </div>
+    }
+
+    <!-- PrimeNG Table -->
+    <div class="table-responsive">
+      <p-table
+        [value]="items()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="onLazyLoad($event)"
+        [paginator]="true"
+        [rows]="pageSize()"
+        [totalRecords]="total()"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="loading()"
+        [first]="(page() - 1) * pageSize()"
+        styleClass="p-datatable-striped"
+        stripedRows
+        ariaLabel="Policies Table"
+      >
+        <ng-template #header>
+          <tr>
+            <th pSortableColumn="policyNumber">Policy # <p-sort-icon field="policyNumber" /></th>
+            <th pSortableColumn="insuredName">Insured Name <p-sort-icon field="insuredName" /></th>
+            <th>Type</th>
+            <th pSortableColumn="currency">Currency <p-sort-icon field="currency" /></th>
+            <th>Sum Insured</th>
+            <th pSortableColumn="startDate">Period <p-sort-icon field="startDate" /></th>
+            <th pSortableColumn="status">Status <p-sort-icon field="status" /></th>
+            <th pSortableColumn="createdAt">Created <p-sort-icon field="createdAt" /></th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-policy>
+          <tr>
+            <td>
+              <strong>{{ policy.policyNumber }}</strong>
+            </td>
+            <td>{{ policy.insuredName }}</td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ policy.policyType }}</span>
+            </td>
+            <td>
+              <span class="badge bg-primary-subtle text-primary fw-bold">{{
+                policy.currency
+              }}</span>
+            </td>
+            <td>{{ policy.sumInsured | money: policy.currency }}</td>
+            <td>
+              <small
+                >{{ policy.startDate | date: 'mediumDate' }} &ndash;
+                {{ policy.endDate | date: 'mediumDate' }}</small
+              >
+            </td>
+            <td><app-status-badge [status]="policy.status" /></td>
+            <td>{{ policy.createdAt | date: 'shortDate' }}</td>
+            <td class="text-end">
+              <a
+                [routerLink]="['/policies', policy.id]"
+                class="btn btn-sm btn-outline-success"
+                [attr.aria-label]="'View policy ' + policy.policyNumber"
+              >
+                View
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="9">
+              <app-empty-state
+                icon="policy"
+                title="No policies found"
+                description="No insurance policies match your current search or filters."
+                [actionLabel]="
+                  filters().search || filters().currency || filters().status
+                    ? 'Clear Filters'
+                    : 'Create Policy'
+                "
+                (actionClicked)="onEmptyAction()"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
