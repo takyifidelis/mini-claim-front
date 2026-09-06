@@ -57,4 +57,11 @@ export const CLAIMS_ROUTES: Routes = [
         (m) => m.ClaimSettlementComponent,
       ),
   },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./components/claim-detail/claim-detail.component').then(
+        (m) => m.ClaimDetailComponent,
+      ),
+  },
 ];

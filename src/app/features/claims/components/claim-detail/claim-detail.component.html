@@ -1,0 +1,636 @@
+<div class="detail-page form-page--container">
+  <!-- Breadcrumb & Header -->
+  <div class="detail-page__header">
+    <div>
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb-nav__list">
+          <li class="breadcrumb-nav__item"><a routerLink="/claims">Claims</a></li>
+          <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
+            {{ claim()?.claimReference || 'Claim Detail' }}
+          </li>
+        </ol>
+      </nav>
+      <div class="detail-page__title-row">
+        <h3 class="detail-page__title header-title fw-bold">{{ claim()?.claimReference }}</h3>
+        @if (claim()?.status) {
+          <app-status-badge [status]="claim()!.status" />
+        }
+      </div>
+      <p class="detail-page__description">
+        Policy:
+        <a [routerLink]="['/policies', claim()?.policyId]"
+          ><strong>{{ claim()?.policyNumber }}</strong></a
+        >
+        ({{ claim()?.insuredName }}) &bull; Currency: <strong>{{ claim()?.currency }}</strong>
+      </p>
+    </div>
+    <div class="detail-page__header-actions">
+      <a routerLink="/claims" class="btn btn-outline-secondary">Back to Claims</a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (claim()) {
+    <!-- Workflow Stage Stepper -->
+    <div class="card p-3 mb-4 bg-white border shadow-sm">
+      <div class="workflow-stepper">
+        <div
+          class="step"
+          [class.step--active]="isStageActive(1)"
+          [class.step--complete]="isStageComplete(1)"
+        >
+          <div class="step__icon">1</div>
+          <div class="step__label">Registered</div>
+        </div>
+        <div class="step__divider" [class.step__divider--active]="isStageComplete(1)"></div>
+        <div
+          class="step"
+          [class.step--active]="isStageActive(2)"
+          [class.step--complete]="isStageComplete(2)"
+        >
+          <div class="step__icon">2</div>
+          <div class="step__label">Risk Review</div>
+        </div>
+        <div class="step__divider" [class.step__divider--active]="isStageComplete(2)"></div>
+        <div
+          class="step"
+          [class.step--active]="isStageActive(3)"
+          [class.step--complete]="isStageComplete(3)"
+        >
+          <div class="step__icon">3</div>
+          <div class="step__label">Approved Payout</div>
+        </div>
+        <div class="step__divider" [class.step__divider--active]="isStageComplete(3)"></div>
+        <div
+          class="step"
+          [class.step--active]="isStageActive(4)"
+          [class.step--complete]="isStageComplete(4)"
+        >
+          <div class="step__icon">4</div>
+          <div class="step__label">Payment Settlement</div>
+        </div>
+      </div>
+    </div>
+
+    @if (actionError()) {
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        {{ actionError() }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="actionError.set(null)"
+          aria-label="Close"
+        ></button>
+      </div>
+    }
+
+    <!-- Financial Balance Overview -->
+    <div class="card-grid mb-4">
+      <div class="card-grid__card">
+        <div class="card-grid__label">Estimated Loss</div>
+        <div class="card-grid__value">
+          {{ claim()!.estimatedLossAmount | money: claim()!.currency }}
+        </div>
+        <div class="card-grid__note">Reported by insured</div>
+      </div>
+      <div class="card-grid__card">
+        <div class="card-grid__label">Approved Payout</div>
+        <div class="card-grid__value">
+          {{ claim()!.approvedPayoutAmount | money: claim()!.currency }}
+        </div>
+        <div class="card-grid__note">
+          Limit: {{ claim()!.coverageLimit | money: claim()!.currency }}
+        </div>
+      </div>
+      <div class="card-grid__card">
+        <div class="card-grid__label">Total Paid</div>
+        <div class="card-grid__value text-primary">
+          {{ claim()!.totalPaid | money: claim()!.currency }}
+        </div>
+        <div class="card-grid__note">{{ paymentsTotal() }} payment(s) recorded</div>
+      </div>
+      <div class="card-grid__card">
+        <div class="card-grid__label">Outstanding Balance</div>
+        <div
+          class="card-grid__value"
+          [class.text-danger]="isOverpaid(claim()!.outstandingBalance)"
+          [class.text-success]="claim()!.outstandingBalance === '0.00'"
+        >
+          @if (claim()!.outstandingBalance === null) {
+            <span class="text-muted">—</span>
+          } @else if (isOverpaid(claim()!.outstandingBalance)) {
+            -{{ claim()!.overpaidAmount | money: claim()!.currency }}
+          } @else {
+            {{ claim()!.outstandingBalance | money: claim()!.currency }}
+          }
+        </div>
+        <div class="card-grid__note">
+          @if (isOverpaid(claim()!.outstandingBalance)) {
+            <span class="text-danger fw-bold">Overpaid</span>
+          } @else if (claim()!.outstandingBalance === '0.00') {
+            <span class="text-success fw-bold">Fully Settled</span>
+          } @else if (claim()!.outstandingBalance !== null) {
+            <span>Pending Settlement</span>
+          } @else {
+            <span>Awaiting Payout Approval</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Claim Facts & Policy Cover Terms -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="detail-page__panel h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="detail-page__panel-title mb-0">Claim Incident Facts</h2>
+            @if (canEditFacts()) {
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="toggleEditFacts()"
+              >
+                {{ isEditingFacts() ? 'Cancel Edit' : 'Edit Facts' }}
+              </button>
+            }
+          </div>
+
+          @if (isEditingFacts()) {
+            <form [formGroup]="factsForm" (ngSubmit)="onSaveFacts()" novalidate>
+              <div class="row g-2 mb-2">
+                <div class="col-6">
+                  <app-form-input
+                    label="Date of Loss"
+                    type="date"
+                    [required]="true"
+                    formControlName="lossDate"
+                  />
+                </div>
+                <div class="col-6">
+                  <app-form-input
+                    label="Date Notified"
+                    type="date"
+                    [required]="true"
+                    formControlName="dateNotified"
+                  />
+                </div>
+              </div>
+              @if (factsForm.errors?.['dateRangeInvalid']) {
+                <div class="text-danger small mb-2">
+                  Date of loss cannot be after notification date.
+                </div>
+              }
+              <app-form-input
+                label="Loss Nature"
+                type="textarea"
+                [required]="true"
+                formControlName="lossNature"
+              />
+              <app-form-input
+                label="Estimated Loss Amount"
+                type="money"
+                [required]="true"
+                formControlName="estimatedLossAmount"
+              />
+              <div class="d-flex justify-content-end gap-2 mt-3">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="toggleEditFacts()">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-success"
+                  [disabled]="factsForm.invalid || actionLoading()"
+                >
+                  Save Facts
+                </button>
+              </div>
+            </form>
+          } @else {
+            <dl class="detail-page__definitions">
+              <dt>Claim Reference</dt>
+              <dd>
+                <strong>{{ claim()!.claimReference }}</strong>
+              </dd>
+
+              <dt>Loss Date</dt>
+              <dd>{{ claim()!.lossDate | date: 'mediumDate' }}</dd>
+
+              <dt>Date Notified</dt>
+              <dd>{{ claim()!.dateNotified | date: 'mediumDate' }}</dd>
+
+              <dt>Loss Nature</dt>
+              <dd>{{ claim()!.lossNature }}</dd>
+
+              <dt>Estimated Loss</dt>
+              <dd>
+                <strong>{{ claim()!.estimatedLossAmount | money: claim()!.currency }}</strong>
+              </dd>
+
+              <dt>Created By</dt>
+              <dd>{{ claim()!.createdBy }} on {{ claim()!.createdAt | date: 'shortDate' }}</dd>
+            </dl>
+          }
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="detail-page__panel h-100">
+          <h2 class="detail-page__panel-title">Applicable Policy Cover Terms</h2>
+          <dl class="detail-page__definitions">
+            <dt>Cover Code</dt>
+            <dd>
+              <span class="badge bg-light text-dark border">{{ claim()!.coverCodeSnapshot }}</span>
+            </dd>
+
+            <dt>Cover Name</dt>
+            <dd>
+              <strong>{{ claim()!.coverNameSnapshot }}</strong>
+            </dd>
+
+            <dt>Coverage Limit</dt>
+            <dd>
+              <strong>{{ claim()!.coverageLimit | money: claim()!.currency }}</strong>
+            </dd>
+
+            <dt>Deductible</dt>
+            <dd>{{ claim()!.deductibleAmount | money: claim()!.currency }}</dd>
+
+            <dt>Policy Cover Terms</dt>
+            <dd>{{ claim()!.coverTerms || 'Standard policy wording applies.' }}</dd>
+
+            <dt>Policy Reference</dt>
+            <dd>
+              <a [routerLink]="['/policies', claim()!.policyId]">{{ claim()!.policyNumber }}</a>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAGE 2: Risk Review Section -->
+    <div class="card p-4 mb-4 border bg-white shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 class="h5 mb-0 fw-bold">Stage 2: Risk Cover Review</h2>
+          <p class="text-muted small mb-0">
+            Assess claim eligibility against the policy risk cover terms.
+          </p>
+        </div>
+        @if (claim()!.review) {
+          <span
+            class="badge"
+            [class.bg-success]="claim()!.review!.decision === 'APPROVED'"
+            [class.bg-danger]="claim()!.review!.decision === 'DENIED'"
+          >
+            {{ claim()!.review!.decision }}
+          </span>
+        }
+      </div>
+
+      @if (claim()!.review) {
+        <div class="p-3 bg-light rounded border">
+          <div class="d-flex justify-content-between mb-2">
+            <strong>Decision: {{ claim()!.review!.decision }}</strong>
+            <small class="text-muted"
+              >Reviewed on {{ claim()!.review!.reviewedAt | date: 'medium' }} by
+              {{ claim()!.review!.reviewedBy }}</small
+            >
+          </div>
+          <p class="mb-0"><strong>Reason:</strong> {{ claim()!.review!.reason }}</p>
+        </div>
+      } @else {
+        <div class="p-3 bg-light-subtle rounded border">
+          <form [formGroup]="reviewForm" (ngSubmit)="onOpenReviewConfirm()" novalidate>
+            <div class="mb-3">
+              <label class="form-label fw-bold"
+                >Review Decision <span class="text-danger">*</span></label
+              >
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    value="APPROVED"
+                    id="decApprove"
+                    formControlName="decision"
+                  />
+                  <label class="form-check-label fw-semibold text-success" for="decApprove"
+                    >Approve Claim</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    value="DENIED"
+                    id="decDeny"
+                    formControlName="decision"
+                  />
+                  <label class="form-check-label fw-semibold text-danger" for="decDeny"
+                    >Deny Claim</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <app-form-input
+              label="Mandatory Reason / Explanation"
+              type="textarea"
+              placeholder="Provide explicit justification for approval or denial..."
+              [required]="true"
+              formControlName="reason"
+              [validationMessages]="{
+                required: 'A detailed reason is mandatory for the review decision.',
+              }"
+            />
+
+            <div class="d-flex justify-content-end mt-3">
+              <button
+                type="submit"
+                class="btn btn-success"
+                [disabled]="reviewForm.invalid || actionLoading()"
+              >
+                Submit Final Review Decision
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+
+    <!-- STAGE 3: Approved Payout Section (Only if APPROVED) -->
+    @if (isClaimApproved()) {
+      <div class="card p-4 mb-4 border bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h2 class="h5 mb-0 fw-bold">Stage 3: Approved Payout Amount</h2>
+            <p class="text-muted small mb-0">
+              Set or adjust the binding settlement payout amount in claim currency ({{
+                claim()!.currency
+              }}).
+            </p>
+          </div>
+          @if (claim()!.approvedPayoutAmount !== null) {
+            <span class="badge bg-success-subtle text-success fs-6 fw-bold">
+              {{ claim()!.approvedPayoutAmount | money: claim()!.currency }}
+            </span>
+          }
+        </div>
+
+        <form [formGroup]="payoutForm" (ngSubmit)="onSavePayout()" novalidate>
+          <div class="row g-3 align-items-center">
+            <div class="col-md-6">
+              <app-form-input
+                label="Approved Payout Amount"
+                type="money"
+                placeholder="e.g. 12000.00"
+                [helperText]="'Max limit: ' + (claim()!.coverageLimit | money: claim()!.currency)"
+                [required]="true"
+                formControlName="approvedPayoutAmount"
+                [validationMessages]="{
+                  required: 'Approved payout amount is required.',
+                  money: 'Enter a valid non-negative monetary amount.',
+                }"
+              />
+            </div>
+            <div class="col-md-6 d-flex gap-2 mb-3">
+              <button
+                type="submit"
+                class="btn btn-success"
+                [disabled]="payoutForm.invalid || actionLoading()"
+              >
+                {{
+                  claim()!.approvedPayoutAmount === null ? 'Set Approved Payout' : 'Update Payout'
+                }}
+              </button>
+
+              @if (canClearPayout()) {
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="onClearPayout()"
+                  [disabled]="actionLoading()"
+                >
+                  Clear Payout
+                </button>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- STAGE 4: Payments & Conversion (Only if APPROVED and Payout is set) -->
+    @if (canRecordPayment()) {
+      <div class="card p-4 mb-4 border bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h2 class="h5 mb-0 fw-bold">Stage 4: Record Settlement Payment</h2>
+            <p class="text-muted small mb-0">
+              Record single or multi-currency claim payments using policy-locked exchange rates.
+            </p>
+          </div>
+        </div>
+
+        <!-- Conversion Preview Box -->
+        @if (paymentPreview()) {
+          <div class="p-3 mb-3 bg-light border rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-primary-subtle text-primary fw-bold">
+                Conversion Rate: 1 {{ paymentForm.get('currency')?.value }} =
+                {{ paymentPreview()!.appliedRate | rate }} {{ claim()!.currency }}
+              </span>
+              <small class="text-muted">Locked to policy rate sheet</small>
+            </div>
+            <div class="row g-2 small">
+              <div class="col-md-4">
+                <strong>Payment Amount:</strong>
+                {{ paymentForm.get('amount')?.value | money: paymentForm.get('currency')?.value }}
+              </div>
+              <div class="col-md-4">
+                <strong>In Claim Currency:</strong>
+                {{ paymentPreview()!.convertedAmount | money: claim()!.currency }}
+              </div>
+              <div class="col-md-4">
+                <strong>Remaining Balance:</strong>
+                <span [class.text-danger]="paymentPreview()!.isNegative">
+                  {{ paymentPreview()!.newBalance | money: claim()!.currency }}
+                  @if (paymentPreview()!.isNegative) {
+                    (Overpaid)
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <form [formGroup]="paymentForm" (ngSubmit)="onOpenPaymentConfirm()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <app-form-input
+                label="Payment Date"
+                type="date"
+                placeholder="YYYY-MM-DD"
+                [required]="true"
+                formControlName="paymentDate"
+              />
+            </div>
+            <div class="col-md-3">
+              <app-form-input
+                label="Payment Currency"
+                type="select"
+                [options]="currencyOptions"
+                [required]="true"
+                formControlName="currency"
+              />
+            </div>
+            <div class="col-md-3">
+              <app-form-input
+                label="Payment Amount"
+                type="money"
+                placeholder="e.g. 5000.00"
+                [required]="true"
+                formControlName="amount"
+                [validationMessages]="{
+                  required: 'Payment amount is required.',
+                  money: 'Enter a valid positive monetary amount.',
+                  moneyPositive: 'Amount must be strictly greater than 0.00.',
+                }"
+              />
+            </div>
+            <div class="col-md-3">
+              <app-form-input
+                label="Payment Reference"
+                placeholder="e.g. Bank"
+                formControlName="reference"
+              />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="paymentForm.invalid || actionLoading()"
+            >
+              <span>Record Payment</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- Payment History Table -->
+    <div class="detail-page__panel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="detail-page__panel-title mb-0">Payment History ({{ paymentsTotal() }})</h2>
+      </div>
+
+      <div class="table-responsive">
+        <p-table
+          [value]="payments()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+          (onLazyLoad)="onPaymentsLazyLoad($event)"
+          [paginator]="true"
+          [rows]="paymentsPageSize()"
+          [totalRecords]="paymentsTotal()"
+          [rowsPerPageOptions]="[5, 10, 20]"
+          [loading]="paymentsLoading()"
+          [first]="(paymentsPage() - 1) * paymentsPageSize()"
+          styleClass="p-datatable-striped"
+          ariaLabel="Payment History Table"
+        >
+          <ng-template #header>
+            <tr>
+              <th>Payment Date</th>
+              <th>Paid Amount</th>
+              <th>Applied Rate</th>
+              <th>Settled in {{ claim()!.currency }}</th>
+              <th>Reference</th>
+              <th>Recorded At</th>
+              <th>Recorded By</th>
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-p>
+            <tr>
+              <td>{{ p.paymentDate | date: 'mediumDate' }}</td>
+              <td>
+                <strong>{{ p.amount | money: p.currency }}</strong>
+              </td>
+              <td>
+                <code>{{ p.appliedRate | rate }}</code>
+              </td>
+              <td>
+                <strong class="text-primary">{{
+                  p.amountInClaimCurrency | money: claim()!.currency
+                }}</strong>
+              </td>
+              <td>{{ p.reference || '—' }}</td>
+              <td>{{ p.createdAt | date: 'short' }}</td>
+              <td>{{ p.createdBy }}</td>
+            </tr>
+          </ng-template>
+
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">
+                No payments have been recorded for this claim yet.
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  }
+
+  <!-- Review Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="reviewConfirmOpen()"
+    title="Confirm Claim Review"
+    [message]="
+      'Are you sure you want to ' +
+      (reviewForm.get('decision')?.value === 'APPROVED' ? 'APPROVE' : 'DENY') +
+      ' this claim? Once submitted, this review is final and cannot be modified.'
+    "
+    [danger]="reviewForm.get('decision')?.value === 'DENIED'"
+    confirmLabel="Confirm Decision"
+    [loading]="actionLoading()"
+    (confirm)="onConfirmReview()"
+    (cancel)="reviewConfirmOpen.set(false)"
+  />
+
+  <!-- Payout Overpayment Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="payoutOverpaymentConfirmOpen()"
+    title="Confirm Payout Reduction (Overpayment)"
+    message="The new approved payout is less than the total amount already paid. This will result in an overpaid claim balance. Do you wish to confirm?"
+    [danger]="true"
+    confirmLabel="Confirm Overpayment"
+    [loading]="actionLoading()"
+    (confirm)="onConfirmPayoutOverpayment()"
+    (cancel)="payoutOverpaymentConfirmOpen.set(false)"
+  />
+
+  <!-- Payment Overpayment Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="paymentOverpaymentConfirmOpen()"
+    title="Confirm Overpayment"
+    message="This payment exceeds the remaining outstanding balance, creating an overpayment. Do you wish to proceed?"
+    [danger]="true"
+    confirmLabel="Proceed with Payment"
+    [loading]="actionLoading()"
+    (confirm)="onConfirmPayment()"
+    (cancel)="paymentOverpaymentConfirmOpen.set(false)"
+  />
+</div>
