@@ -1,0 +1,75 @@
+.main {
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  width: 400px;
+  height: 72px;
+  position: fixed;
+  top: 2rem;
+  right: 1rem;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: slideIn 0.5s ease-out;
+  border: 1px solid #d0d5dd;
+
+  .toastr {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+
+    .paragraph {
+      color: #475467;
+      font-family: Inter, sans-serif;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      width: 80%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      box-orient: vertical;
+      display: box;
+    }
+
+    .close {
+      width: 8px;
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.reader {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  animation: bgTransition 4s linear 1 forwards;
+  transform-origin: left;
+  border-radius: inherit;
+}
+
+@keyframes bgTransition {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
