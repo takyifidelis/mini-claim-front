@@ -47,9 +47,7 @@ import { MoneyPipe } from '../../pipes/money.pipe';
                   [class.text-success]="isFullyPaid(tot.signedOutstandingBalance)"
                 >
                   @if (isOverpaid(tot.signedOutstandingBalance)) {
-                    -{{
-                      getAbsValue(tot.signedOutstandingBalance) | money: tot.currency
-                    }}
+                    -{{ getAbsValue(tot.signedOutstandingBalance) | money: tot.currency }}
                     (Overpaid)
                   } @else {
                     {{ tot.signedOutstandingBalance | money: tot.currency }}

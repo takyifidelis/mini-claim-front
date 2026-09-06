@@ -43,7 +43,9 @@
       <h2 class="detail-page__panel-title">Policy Information</h2>
       <dl class="detail-page__definitions">
         <dt>Policy Number</dt>
-        <dd><strong>{{ policy()!.policyNumber }}</strong></dd>
+        <dd>
+          <strong>{{ policy()!.policyNumber }}</strong>
+        </dd>
 
         <dt>Insured Name</dt>
         <dd>{{ policy()!.insuredName }}</dd>
@@ -52,16 +54,23 @@
         <dd>{{ policy()!.policyType }}</dd>
 
         <dt>Currency</dt>
-        <dd><span class="badge bg-primary-subtle text-primary fw-bold">{{ policy()!.currency }}</span></dd>
+        <dd>
+          <span class="badge bg-primary-subtle text-primary fw-bold">{{ policy()!.currency }}</span>
+        </dd>
 
         <dt>Total Sum Insured</dt>
-        <dd><strong>{{ policy()!.sumInsured | money: policy()!.currency }}</strong></dd>
+        <dd>
+          <strong>{{ policy()!.sumInsured | money: policy()!.currency }}</strong>
+        </dd>
 
         <dt>Premium Amount</dt>
         <dd>{{ policy()!.premiumAmount | money: policy()!.currency }}</dd>
 
         <dt>Coverage Period</dt>
-        <dd>{{ policy()!.startDate | date: 'mediumDate' }} &ndash; {{ policy()!.endDate | date: 'mediumDate' }}</dd>
+        <dd>
+          {{ policy()!.startDate | date: 'mediumDate' }} &ndash;
+          {{ policy()!.endDate | date: 'mediumDate' }}
+        </dd>
 
         <dt>Status</dt>
         <dd><app-status-badge [status]="policy()!.status" /></dd>
@@ -102,9 +111,13 @@
 
           <ng-template #body let-cover>
             <tr>
-              <td><strong>{{ cover.coverCodeSnapshot }}</strong></td>
+              <td>
+                <strong>{{ cover.coverCodeSnapshot }}</strong>
+              </td>
               <td>{{ cover.coverNameSnapshot }}</td>
-              <td><strong>{{ cover.coverageLimit | money: policy()!.currency }}</strong></td>
+              <td>
+                <strong>{{ cover.coverageLimit | money: policy()!.currency }}</strong>
+              </td>
               <td>{{ cover.deductibleAmount | money: policy()!.currency }}</td>
               <td>{{ cover.terms || '—' }}</td>
             </tr>
@@ -119,13 +132,15 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="detail-page__panel-title mb-0">Locked Exchange Rate Sheet</h2>
           <span class="badge bg-light text-dark border">
-            <span class="material-symbols-outlined align-middle fs-6 me-1" aria-hidden="true">lock</span>
+            <span class="material-symbols-outlined align-middle fs-6 me-1" aria-hidden="true"
+              >lock</span
+            >
             Locked to Policy
           </span>
         </div>
         <p class="small text-muted">
-          Reference: <strong>{{ policy()!.exchangeRateSheet!.reference }}</strong> |
-          Effective: {{ policy()!.exchangeRateSheet!.effectiveAt | date: 'medium' }}
+          Reference: <strong>{{ policy()!.exchangeRateSheet!.reference }}</strong> | Effective:
+          {{ policy()!.exchangeRateSheet!.effectiveAt | date: 'medium' }}
         </p>
       </div>
     }

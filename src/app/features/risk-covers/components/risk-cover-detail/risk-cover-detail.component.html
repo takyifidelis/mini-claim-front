@@ -15,7 +15,9 @@
           <app-status-badge [status]="cover()!.status" />
         }
       </div>
-      <p class="detail-page__description">Risk Cover Code: <code>{{ cover()?.code }}</code></p>
+      <p class="detail-page__description">
+        Risk Cover Code: <code>{{ cover()?.code }}</code>
+      </p>
     </div>
     <div class="detail-page__header-actions">
       <a routerLink="/risk-covers" class="btn btn-outline-secondary">Back to List</a>
@@ -37,7 +39,9 @@
       <h2 class="detail-page__panel-title">Cover Information</h2>
       <dl class="detail-page__definitions">
         <dt>Code</dt>
-        <dd><strong>{{ cover()!.code }}</strong></dd>
+        <dd>
+          <strong>{{ cover()!.code }}</strong>
+        </dd>
 
         <dt>Name</dt>
         <dd>{{ cover()!.name }}</dd>

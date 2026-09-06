@@ -20,13 +20,15 @@ describe('RiskCoversState', () => {
 
   it('should handle LoadRiskCovers action', async () => {
     const mockApi = {
-      getAll: vi.fn().mockReturnValue(of({
-        items: mockCovers,
-        totalItems: 1,
-        page: 1,
-        pageSize: 10,
-        totalPages: 1,
-      })),
+      getAll: vi.fn().mockReturnValue(
+        of({
+          items: mockCovers,
+          totalItems: 1,
+          page: 1,
+          pageSize: 10,
+          totalPages: 1,
+        }),
+      ),
       getById: vi.fn(),
       create: vi.fn(),
     };

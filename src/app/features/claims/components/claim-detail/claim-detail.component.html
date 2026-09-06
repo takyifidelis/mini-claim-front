@@ -538,8 +538,8 @@
       <div class="table-responsive">
         <p-table
           [value]="payments()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
+          [lazy]="true"
+          [lazyLoadOnInit]="false"
           (onLazyLoad)="onPaymentsLazyLoad($event)"
           [paginator]="true"
           [rows]="paymentsPageSize()"

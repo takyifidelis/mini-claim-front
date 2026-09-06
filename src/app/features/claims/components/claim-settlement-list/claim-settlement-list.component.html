@@ -82,7 +82,9 @@
       >
         <ng-template #header>
           <tr>
-            <th pSortableColumn="claimReference">Claim Ref <p-sort-icon field="claimReference" /></th>
+            <th pSortableColumn="claimReference">
+              Claim Ref <p-sort-icon field="claimReference" />
+            </th>
             <th pSortableColumn="policyNumber">Policy # <p-sort-icon field="policyNumber" /></th>
             <th pSortableColumn="insuredName">Insured <p-sort-icon field="insuredName" /></th>
             <th>Cover</th>
@@ -96,12 +98,16 @@
 
         <ng-template #body let-claim>
           <tr>
-            <td><strong>{{ claim.claimReference }}</strong></td>
+            <td>
+              <strong>{{ claim.claimReference }}</strong>
+            </td>
             <td>
               <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
             </td>
             <td>{{ claim.insuredName }}</td>
-            <td><span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span></td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span>
+            </td>
             <td>{{ claim.approvedPayoutAmount | money: claim.currency }}</td>
             <td>{{ claim.totalPaid | money: claim.currency }}</td>
             <td>
@@ -114,7 +120,9 @@
               } @else if (claim.outstandingBalance === '0.00') {
                 <span class="text-success fw-bold">Fully Paid</span>
               } @else {
-                <strong class="text-primary">{{ claim.outstandingBalance | money: claim.currency }}</strong>
+                <strong class="text-primary">{{
+                  claim.outstandingBalance | money: claim.currency
+                }}</strong>
               }
             </td>
             <td><app-status-badge [status]="claim.status" /></td>

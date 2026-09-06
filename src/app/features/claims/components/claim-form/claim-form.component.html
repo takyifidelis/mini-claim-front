@@ -26,7 +26,7 @@
           [required]="true"
           formControlName="policyId"
           [validationMessages]="{
-            required: 'Please select an existing policy.'
+            required: 'Please select an existing policy.',
           }"
         />
 
@@ -43,10 +43,13 @@
                 <strong>Insured:</strong> {{ selectedPolicy()!.insuredName }}
               </div>
               <div class="col-md-4">
-                <strong>Sum Insured:</strong> {{ selectedPolicy()!.sumInsured | money: selectedPolicy()!.currency }}
+                <strong>Sum Insured:</strong>
+                {{ selectedPolicy()!.sumInsured | money: selectedPolicy()!.currency }}
               </div>
               <div class="col-md-4">
-                <strong>Period:</strong> {{ selectedPolicy()!.startDate | date: 'shortDate' }} &ndash; {{ selectedPolicy()!.endDate | date: 'shortDate' }}
+                <strong>Period:</strong>
+                {{ selectedPolicy()!.startDate | date: 'shortDate' }} &ndash;
+                {{ selectedPolicy()!.endDate | date: 'shortDate' }}
               </div>
             </div>
           </div>
@@ -59,7 +62,8 @@
       <fieldset class="form-fieldset">
         <legend class="form-fieldset__legend">Policy Risk Cover</legend>
         <p class="form-fieldset__description">
-          Select the applicable cover assigned to this policy. Only covers attached to this policy can be selected.
+          Select the applicable cover assigned to this policy. Only covers attached to this policy
+          can be selected.
         </p>
 
         <div class="form-fieldset__inputs">
@@ -70,7 +74,7 @@
             [required]="true"
             formControlName="policyRiskCoverId"
             [validationMessages]="{
-              required: 'Please select an assigned policy cover.'
+              required: 'Please select an assigned policy cover.',
             }"
           />
 
@@ -110,7 +114,7 @@
               [required]="true"
               formControlName="lossDate"
               [validationMessages]="{
-                required: 'Date of loss is required.'
+                required: 'Date of loss is required.',
               }"
             />
           </div>
@@ -122,16 +126,14 @@
               [required]="true"
               formControlName="dateNotified"
               [validationMessages]="{
-                required: 'Date notified is required.'
+                required: 'Date notified is required.',
               }"
             />
           </div>
         </div>
 
         @if (form.errors?.['dateRangeInvalid']) {
-          <div class="text-danger small">
-            Date of loss cannot be after the notification date.
-          </div>
+          <div class="text-danger small">Date of loss cannot be after the notification date.</div>
         }
 
         <app-form-input
@@ -141,7 +143,7 @@
           [required]="true"
           formControlName="lossNature"
           [validationMessages]="{
-            required: 'Loss nature details are required.'
+            required: 'Loss nature details are required.',
           }"
         />
 
@@ -154,7 +156,7 @@
           formControlName="estimatedLossAmount"
           [validationMessages]="{
             required: 'Estimated loss amount is required.',
-            money: 'Enter a valid non-negative monetary amount.'
+            money: 'Enter a valid non-negative monetary amount.',
           }"
         />
       </div>
@@ -162,13 +164,13 @@
 
     <div class="form-page__footer-buttons">
       <a routerLink="/claims" class="btn btn-outline-secondary">Cancel</a>
-      <button
-        type="submit"
-        class="btn btn-success"
-        [disabled]="form.invalid || submitting()"
-      >
+      <button type="submit" class="btn btn-success" [disabled]="form.invalid || submitting()">
         @if (submitting()) {
-          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          <span
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
         }
         <span>Register Claim</span>
       </button>

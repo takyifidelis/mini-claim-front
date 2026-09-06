@@ -13,8 +13,7 @@ export const routes: Routes = [
       },
       {
         path: 'claims',
-        loadChildren: () =>
-          import('./features/claims/claims.routes').then((m) => m.CLAIMS_ROUTES),
+        loadChildren: () => import('./features/claims/claims.routes').then((m) => m.CLAIMS_ROUTES),
       },
       {
         path: 'policies',
@@ -24,9 +23,7 @@ export const routes: Routes = [
       {
         path: 'risk-covers',
         loadChildren: () =>
-          import('./features/risk-covers/risk-covers.routes').then(
-            (m) => m.RISK_COVERS_ROUTES,
-          ),
+          import('./features/risk-covers/risk-covers.routes').then((m) => m.RISK_COVERS_ROUTES),
       },
       {
         path: 'exchange-rates',

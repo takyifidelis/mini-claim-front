@@ -3,7 +3,8 @@
     <div>
       <h3 class="section-header__title header-title fw-bold">Create Insurance Policy</h3>
       <p class="section-header__description">
-        Register a new policy, assign catalogue risk covers with coverage limits, and lock current exchange rates.
+        Register a new policy, assign catalogue risk covers with coverage limits, and lock current
+        exchange rates.
       </p>
     </div>
   </div>
@@ -24,11 +25,15 @@
       @if (currentExchangeRate()) {
         <p class="small text-muted mb-2">
           This policy will be locked to published rate sheet
-          <strong>{{ currentExchangeRate()!.reference }}</strong> (effective {{ currentExchangeRate()!.effectiveAt | date: 'medium' }}).
-          All multi-currency claim conversions for this policy will use these locked rates.
+          <strong>{{ currentExchangeRate()!.reference }}</strong> (effective
+          {{ currentExchangeRate()!.effectiveAt | date: 'medium' }}). All multi-currency claim
+          conversions for this policy will use these locked rates.
         </p>
         <div class="d-flex flex-wrap gap-2">
-          @for (entry of currentExchangeRate()!.entries; track entry.fromCurrency + '-' + entry.toCurrency) {
+          @for (
+            entry of currentExchangeRate()!.entries;
+            track entry.fromCurrency + '-' + entry.toCurrency
+          ) {
             <span class="badge bg-white text-dark border small">
               1 {{ entry.fromCurrency }} = {{ entry.rate | rate }} {{ entry.toCurrency }}
             </span>
@@ -36,7 +41,8 @@
         </div>
       } @else {
         <div class="alert alert-warning mb-0 small">
-          No active exchange rate sheet found. Please publish an exchange rate sheet before creating policies.
+          No active exchange rate sheet found. Please publish an exchange rate sheet before creating
+          policies.
         </div>
       }
     </div>
@@ -52,7 +58,7 @@
           formControlName="insuredName"
           [validationMessages]="{
             required: 'Insured name is required.',
-            maxlength: 'Cannot exceed 200 characters.'
+            maxlength: 'Cannot exceed 200 characters.',
           }"
         />
 
@@ -64,7 +70,7 @@
               [required]="true"
               formControlName="policyType"
               [validationMessages]="{
-                required: 'Policy type is required.'
+                required: 'Policy type is required.',
               }"
             />
           </div>
@@ -101,9 +107,7 @@
         </div>
 
         @if (form.errors?.['dateRangeInvalid']) {
-          <div class="text-danger small">
-            End date must be on or after the start date.
-          </div>
+          <div class="text-danger small">End date must be on or after the start date.</div>
         }
 
         <div class="row g-3">
@@ -117,7 +121,7 @@
               formControlName="sumInsured"
               [validationMessages]="{
                 required: 'Sum insured is required.',
-                money: 'Enter a valid monetary amount.'
+                money: 'Enter a valid monetary amount.',
               }"
             />
           </div>
@@ -128,7 +132,7 @@
               placeholder="e.g. 2500.00"
               formControlName="premiumAmount"
               [validationMessages]="{
-                money: 'Enter a valid monetary amount.'
+                money: 'Enter a valid monetary amount.',
               }"
             />
           </div>
@@ -141,7 +145,9 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <legend class="form-fieldset__legend mb-0">Assigned Risk Covers</legend>
-          <p class="form-fieldset__description">Assign at least one active catalogue risk cover to this policy.</p>
+          <p class="form-fieldset__description">
+            Assign at least one active catalogue risk cover to this policy.
+          </p>
         </div>
         <button
           type="button"
@@ -165,7 +171,7 @@
                   [required]="true"
                   formControlName="riskCoverId"
                   [validationMessages]="{
-                    required: 'Please select a risk cover from the catalogue.'
+                    required: 'Please select a risk cover from the catalogue.',
                   }"
                 />
               </div>
@@ -179,7 +185,7 @@
                   [validationMessages]="{
                     required: 'Coverage limit is required.',
                     money: 'Enter a valid positive monetary amount.',
-                    moneyPositive: 'Coverage limit must be strictly greater than 0.00.'
+                    moneyPositive: 'Coverage limit must be strictly greater than 0.00.',
                   }"
                 />
               </div>
@@ -190,7 +196,7 @@
                   placeholder="e.g. 500.00"
                   formControlName="deductibleAmount"
                   [validationMessages]="{
-                    money: 'Enter a valid non-negative monetary amount.'
+                    money: 'Enter a valid non-negative monetary amount.',
                   }"
                 />
               </div>

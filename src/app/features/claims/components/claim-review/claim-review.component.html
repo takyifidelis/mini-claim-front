@@ -144,7 +144,8 @@
       } @else {
         <div class="p-4 bg-light-subtle rounded border text-center">
           <p class="text-muted mb-4">
-            Select a review decision below. You will be prompted to provide a mandatory justification reason.
+            Select a review decision below. You will be prompted to provide a mandatory
+            justification reason.
           </p>
           <div class="d-flex justify-content-center gap-3">
             <button
@@ -173,14 +174,20 @@
   @if (isModalOpen()) {
     <div
       class="modal-backdrop fade show"
-      style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 1050; backdrop-filter: blur(2px);"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        z-index: 1050;
+        backdrop-filter: blur(2px);
+      "
     ></div>
     <div
       class="modal show d-block"
       tabindex="-1"
       role="dialog"
       aria-modal="true"
-      style="z-index: 1055;"
+      style="z-index: 1055"
       (keydown.escape)="closeModal()"
     >
       <div class="modal-dialog modal-dialog-centered">
@@ -201,7 +208,8 @@
               <p class="text-muted small mb-3">
                 Please enter a mandatory justification reason for
                 <strong>{{ selectedDecision() }}</strong> decision on claim
-                <strong>{{ claim()?.claimReference }}</strong>.
+                <strong>{{ claim()?.claimReference }}</strong
+                >.
               </p>
               <app-form-input
                 label="Decision Reason / Justification"
@@ -232,7 +240,11 @@
                 [disabled]="reasonForm.invalid || actionLoading()"
               >
                 @if (actionLoading()) {
-                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                 }
                 Submit Decision
               </button>

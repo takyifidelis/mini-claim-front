@@ -3,7 +3,8 @@
     <div>
       <h3 class="list-page__header-title header-title fw-bold">Claims Register</h3>
       <p class="list-page__header-description">
-        Multi-currency claims registry with policy-locked exchange rates, review workflow, and payment settlement.
+        Multi-currency claims registry with policy-locked exchange rates, review workflow, and
+        payment settlement.
       </p>
     </div>
     <div class="list-page__header-actions">
@@ -98,7 +99,9 @@
       >
         <ng-template #header>
           <tr>
-            <th pSortableColumn="claimReference">Claim Ref <p-sort-icon field="claimReference" /></th>
+            <th pSortableColumn="claimReference">
+              Claim Ref <p-sort-icon field="claimReference" />
+            </th>
             <th pSortableColumn="policyNumber">Policy # <p-sort-icon field="policyNumber" /></th>
             <th pSortableColumn="insuredName">Insured <p-sort-icon field="insuredName" /></th>
             <th>Cover</th>
@@ -115,12 +118,16 @@
 
         <ng-template #body let-claim>
           <tr>
-            <td><strong>{{ claim.claimReference }}</strong></td>
+            <td>
+              <strong>{{ claim.claimReference }}</strong>
+            </td>
             <td>
               <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
             </td>
             <td>{{ claim.insuredName }}</td>
-            <td><span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span></td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ claim.coverCodeSnapshot }}</span>
+            </td>
             <td>{{ claim.lossDate | date: 'shortDate' }}</td>
             <td>{{ claim.dateNotified | date: 'shortDate' }}</td>
             <td>{{ claim.estimatedLossAmount | money: claim.currency }}</td>

@@ -16,8 +16,7 @@ describe('DeleteComponent', () => {
           useValue: { close: () => {} },
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteComponent);
     component = fixture.componentInstance;

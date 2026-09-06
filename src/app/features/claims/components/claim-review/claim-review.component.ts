@@ -3,11 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  ClaimsState,
-  LoadClaimDetail,
-  SubmitClaimReview,
-} from '../../claims.state';
+import { ClaimsState, LoadClaimDetail, SubmitClaimReview } from '../../claims.state';
 import { FormInputComponent } from '../../../../shared/form-input/form-input.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { MoneyPipe } from '../../../../shared/pipes/money.pipe';

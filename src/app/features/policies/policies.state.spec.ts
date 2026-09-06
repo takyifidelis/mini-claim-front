@@ -26,13 +26,15 @@ describe('PoliciesState', () => {
 
   it('should load list of policies', async () => {
     const mockApi = {
-      getAll: vi.fn().mockReturnValue(of({
-        items: [mockPolicySummary],
-        totalItems: 1,
-        page: 1,
-        pageSize: 10,
-        totalPages: 1,
-      })),
+      getAll: vi.fn().mockReturnValue(
+        of({
+          items: [mockPolicySummary],
+          totalItems: 1,
+          page: 1,
+          pageSize: 10,
+          totalPages: 1,
+        }),
+      ),
       getOptions: vi.fn(),
       getById: vi.fn(),
       create: vi.fn(),

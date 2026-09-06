@@ -4,9 +4,7 @@ export const CLAIMS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/claim-list/claim-list.component').then(
-        (m) => m.ClaimListComponent,
-      ),
+      import('./components/claim-list/claim-list.component').then((m) => m.ClaimListComponent),
   },
   {
     path: 'review',
@@ -32,9 +30,7 @@ export const CLAIMS_ROUTES: Routes = [
   {
     path: 'new',
     loadComponent: () =>
-      import('./components/claim-form/claim-form.component').then(
-        (m) => m.ClaimFormComponent,
-      ),
+      import('./components/claim-form/claim-form.component').then((m) => m.ClaimFormComponent),
   },
   {
     path: ':id/review',
