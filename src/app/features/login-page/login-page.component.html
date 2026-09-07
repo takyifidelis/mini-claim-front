@@ -1,0 +1,56 @@
+<main class="login-page">
+  <section class="login-intro" aria-labelledby="login-heading">
+    <div class="brand">
+      <span class="brand__icon material-symbols-outlined" aria-hidden="true">shield</span>
+      <div>
+        <span class="brand__name">Claims Register</span>
+        <span class="brand__caption">Mini Claims Register</span>
+      </div>
+    </div>
+
+    <div class="login-intro__content">
+      <p class="eyebrow">Claims management, simplified</p>
+      <h1 id="login-heading">Manage every claim with clarity.</h1>
+      <p>Review claims, policies, risk covers, and settlements from one secure workspace.</p>
+    </div>
+
+    <p class="login-intro__footer">Secure access for authorised team members</p>
+  </section>
+
+  <section class="login-panel" aria-labelledby="sign-in-title">
+    <div class="login-card">
+      <div class="login-card__header">
+        <div class="login-card__icon" aria-hidden="true">
+          <span class="material-symbols-outlined">lock</span>
+        </div>
+        <p class="eyebrow">Welcome back</p>
+        <h2 id="sign-in-title">Sign in to your account</h2>
+        <p>Enter your details to continue to the dashboard.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+        <app-form-input
+          formControlName="username"
+          inputId="login-username"
+          label="Username"
+          type="text"
+          placeholder="Enter your username"
+        />
+        <app-form-input
+          formControlName="password"
+          inputId="login-password"
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+        />
+
+        <button class="login-button" type="submit">
+          <span>Sign in</span>
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+        </button>
+      </form>
+
+      <p class="login-card__help">Need access? Contact your system administrator.</p>
+    </div>
+  </section>
+</main>
