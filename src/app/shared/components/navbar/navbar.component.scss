@@ -102,6 +102,42 @@
   border-radius: 8px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+
+  &:hover {
+    border-color: #86efac;
+    background: #f0fdf4;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(16, 185, 129, 0.3);
+    outline-offset: 2px;
+  }
+}
+
+.user-menu-chevron {
+  color: #64748b;
+  font-size: 1.15rem;
+}
+
+.logout-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    color: #b42318;
+    font-size: 1.2rem;
+  }
 }
 
 .user-avatar {

@@ -31,6 +31,7 @@ let nextFormInputId = 0;
 
 export type FormInputType =
   | 'text'
+  | 'password'
   | 'textarea'
   | 'date'
   | 'money'
@@ -110,8 +111,8 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
   readonly filter = input(true);
   /** Comma-separated field names used for filtering select options. */
   readonly filterBy = input('name,id');
-  /** Whether the select/multi-select widget shows a clear button. Defaults to `true`. */
-  readonly showClear = input(true);
+  /** Whether the select/multi-select widget shows a clear button. Defaults to `false`. */
+  readonly showClear = input(false);
 
   protected readonly internalControl = new FormControl<unknown>(null);
   protected readonly controlId = computed(() => this.inputId() || this.generatedId);

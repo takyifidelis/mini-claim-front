@@ -60,6 +60,23 @@
         pInputText
       />
     }
+    @case ('password') {
+      <input
+        class="form-input__control"
+        [id]="controlId()"
+        [formControl]="internalControl"
+        [placeholder]="placeholder()"
+        [readOnly]="readOnly()"
+        [attr.aria-required]="isRequired"
+        [attr.aria-describedby]="describedBy"
+        [invalid]="showError"
+        (blur)="markAsTouched()"
+        type="password"
+        autocomplete="current-password"
+        fluid
+        pInputText
+      />
+    }
     @case ('decimal-rate') {
       <input
         class="form-input__control"

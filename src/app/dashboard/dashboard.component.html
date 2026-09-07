@@ -9,7 +9,7 @@
         <!-- Section: Overview -->
         <div class="nav-section-title">Overview</div>
         <a
-          routerLink="/claims"
+          routerLink="/dashboard/claims"
           routerLinkActive="active-link"
           [routerLinkActiveOptions]="{ exact: true }"
           class="nav-link"
@@ -42,7 +42,7 @@
         @if (claimsExpanded()) {
           <div class="nav-sub-group" id="nav-group-claims">
             <a
-              routerLink="/claims"
+              routerLink="/dashboard/claims"
               routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-sub-link"
@@ -50,21 +50,21 @@
               <span class="material-symbols-outlined" aria-hidden="true">format_list_bulleted</span>
               <span>Register & List</span>
             </a>
-            <a routerLink="/claims/new" routerLinkActive="active-link" class="nav-sub-link">
+            <a routerLink="/dashboard/claims/new" routerLinkActive="active-link" class="nav-sub-link">
               <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
               <span>Register Claim</span>
             </a>
-            <a routerLink="/claims/review" routerLinkActive="active-link" class="nav-sub-link">
+            <a routerLink="/dashboard/claims/review" routerLinkActive="active-link" class="nav-sub-link">
               <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>
               <span>Claims Review</span>
             </a>
-            <a routerLink="/claims/payouts" routerLinkActive="active-link" class="nav-sub-link">
+            <a routerLink="/dashboard/claims/payouts" routerLinkActive="active-link" class="nav-sub-link">
               <span class="material-symbols-outlined" aria-hidden="true"
                 >account_balance_wallet</span
               >
               <span>Approved Payouts</span>
             </a>
-            <a routerLink="/claims/settlements" routerLinkActive="active-link" class="nav-sub-link">
+            <a routerLink="/dashboard/claims/settlements" routerLinkActive="active-link" class="nav-sub-link">
               <span class="material-symbols-outlined" aria-hidden="true">payments</span>
               <span>Payment Settlement</span>
             </a>
@@ -95,7 +95,7 @@
         @if (policiesExpanded()) {
           <div class="nav-sub-group" id="nav-group-policies">
             <a
-              routerLink="/policies"
+              routerLink="/dashboard/policies"
               routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-sub-link"
@@ -103,12 +103,12 @@
               <span class="material-symbols-outlined" aria-hidden="true">list_alt</span>
               <span>All Policies</span>
             </a>
-            <a routerLink="/policies/new" routerLinkActive="active-link" class="nav-sub-link">
+            <a routerLink="/dashboard/policies/new" routerLinkActive="active-link" class="nav-sub-link">
               <span class="material-symbols-outlined" aria-hidden="true">add_box</span>
               <span>Create Policy</span>
             </a>
             <a
-              routerLink="/risk-covers"
+              routerLink="/dashboard/risk-covers"
               routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-sub-link"
@@ -119,10 +119,10 @@
           </div>
         }
         <a
-          routerLink="/exchange-rates"
+          routerLink="/dashboard/exchange-rates"
           routerLinkActive="active-link"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="nav-sub-link"
+          class="nav-link"
         >
           <span class="material-symbols-outlined" aria-hidden="true">table_chart</span>
           <span>Rate Sheets</span>

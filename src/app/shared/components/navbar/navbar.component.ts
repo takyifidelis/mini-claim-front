@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { Menu } from 'primeng/menu';
 
 /**
  * Top-level navigation bar rendered at the top of the application shell.
@@ -8,8 +10,21 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [Menu, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {}
+export class NavbarComponent {
+  private readonly router = inject(Router);
+
+  protected readonly profileMenuItems: MenuItem[] = [
+    {
+      label: 'Logout',
+      command: () => this.logout(),
+    },
+  ];
+
+  private logout(): void {
+    void this.router.navigate(['/login']);
+  }
+}
