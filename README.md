@@ -1,71 +1,54 @@
-# MiniClaim Frontend
+# Claims Register
 
-Angular-based frontend for the Insurance Claim Management System. Built with Angular 22, NGXS, PrimeNG, and Bootstrap.
+A full-stack insurance claims application for managing risk covers, exchange rates, policies, claim reviews, approved payouts, and settlement payments.
 
----
+## Stack
 
-## Features
+- Angular frontend
+- NestJS REST API
+- PostgreSQL with Prisma ORM
 
-- **Claims Management**:
-  - General Claims list with server-side pagination, search, and status filtering.
-  - Claim Registration & Editing form with auto-computed estimated loss and cover validation.
-  - Claims Review workflow for evaluating pending claims against policy cover limits.
-  - Approved Payout processing and net payable calculation with deductible deduction.
-  - Payment Settlement recording with payment method selection and transaction references.
-  - Detailed Claim Breakdown with complete audit timeline, documents, and payment history.
-- **Policy Management**:
-  - Policies list with cover limits, deductible rates, policyholder details, and active status tracking.
-  - Policy Registration and detail overview.
-- **Risk Covers Catalogue**:
-  - Configurable risk cover catalogue entries with active status indicators.
-- **Exchange Rates**:
-  - Multi-currency exchange rate catalogue (GHS, USD, EUR) supporting Bank of Ghana standards (4 decimal places).
+## Run locally
 
----
+### Backend
 
-## Tech Stack
-
-- **Framework**: Angular v22 (Standalone components, Signals, Native control flow)
-- **State Management**: NGXS (`@ngxs/store` v22)
-- **UI Components**: PrimeNG v22 (Aura preset theme)
-- **CSS / Layout**: Bootstrap 5.3 & custom SCSS modular styles
-- **HTTP**: Angular `HttpClient` with functional `apiErrorInterceptor`
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v20+)
-- npm (v10+)
-
-### Installation
+Ensure PostgreSQL is running, then create `claim-back-new/.env` from its `.env.example` and set a valid `DATABASE_URL`.
 
 ```bash
+cd claim-back-new
 npm install
+npx prisma generate
+npx prisma migrate dev
+npx prisma db seed
+npm run start:dev
 ```
 
-### Development Server
+The API normally runs at `http://localhost:3000`. Check the configured Swagger path for API documentation.
 
-Run the development server:
+### Frontend
+
+In another terminal:
 
 ```bash
-ng serve
+cd claim-front-new
+npm install
+npm start
 ```
 
-Navigate to `http://localhost:4200/`. The application will automatically reload if you change any source files.
+Open `http://localhost:4200`. Confirm that the frontend API configuration points to the local NestJS URL.
 
-### Production Build
+## Assumptions
 
-```bash
-ng build
-```
+- GHS is the base currency. Users enter the GHS equivalent of 1 USD and 1 EUR.
+- Exchange-rate updates create immutable records; new policies use the latest active rate, while existing policies retain their original rate.
+- A policy may have multiple risk covers, but a claim is reviewed against an assigned cover.
+- Claims move through review, payout approval, and payment settlement. Denied claims cannot be paid.
+- The backend is authoritative for workflow rules and financial calculations.
+- Monetary values use exact decimal arithmetic, and overpayments remain visible as negative balances.
+- List filtering is applied before totals and server-side pagination. Totals are grouped by claim currency.
 
-The build artifacts will be stored in the `dist/` directory.
+## With more time
 
-### Running Tests
+I would add authentication and role-based authorization, a complete audit history, automated Bank of Ghana exchange-rate integration, stronger concurrency and payment-idempotency controls, broader automated test coverage, monitoring, and more detailed financial reports.
 
-```bash
-ng test
-```
+I would also introduce an agent-assisted claim auditing and settlement workflow to reduce fraud, calculation errors, and manual review time. Coordinated agents would extract and structure claim documents, cross-check timelines, weather records, and contractor costs, validate claims against policy clauses and coverage limits, and calculate payouts using deterministic, high-precision rules. The workflow would support individual and batch claim processing, with a human reviewer making the final decision before settlement.
