@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormInputComponent } from '../../shared/form-input/form-input.component';
@@ -17,8 +17,11 @@ export class LoginPageComponent {
     username: ['', Validators.required],
     password: ['', Validators.required],
   });
+  protected readonly submitted = signal(false);
 
   login(): void {
+    this.submitted.set(true);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

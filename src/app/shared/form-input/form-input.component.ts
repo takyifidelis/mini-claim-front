@@ -99,6 +99,8 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
   readonly helperText = input('');
   /** Per-instance overrides for validation error messages keyed by error token. */
   readonly validationMessages = input<Readonly<Record<string, string>>>({});
+  /** Shows validation errors immediately, typically after a parent form is submitted. */
+  readonly showErrors = input(false);
   /** Marks the field as required (adds asterisk). Automatically inferred from the parent control when not set. */
   readonly required = input(false);
   /** Disables the field regardless of the reactive form control state. */
@@ -165,7 +167,7 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
   protected get showError(): boolean {
     this.controlStateVersion();
     const control = this.ngControl?.control;
-    return Boolean(control?.invalid && (control.touched || control.dirty));
+    return Boolean(control?.invalid && (this.showErrors() || control.touched || control.dirty));
   }
 
   protected get errorMessage(): string {
