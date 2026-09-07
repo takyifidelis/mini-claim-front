@@ -4,6 +4,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/login-page/login-page.component').then((m) => m.LoginPageComponent),
+  },
+  {
+    path: 'dashboard',
     component: DashboardComponent,
     children: [
       {
@@ -36,6 +46,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'claims',
+    redirectTo: 'login',
   },
 ];
