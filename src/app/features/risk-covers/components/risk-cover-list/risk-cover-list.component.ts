@@ -14,6 +14,7 @@ import {
 import { FormInputComponent } from '../../../../shared/form-input/form-input.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { RiskCoverStatus } from '../../../../shared/models';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 /**
  * Risk cover catalogue list page.
@@ -60,15 +61,18 @@ export class RiskCoverListComponent implements OnInit {
    * Subscribes to the status filter control and dispatches `LoadRiskCovers`.
    */
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        map((value) => value?.trim() ?? ''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => this.store.dispatch(new SetRiskCoversFilter({ search })));
+
     this.statusControl.valueChanges.subscribe((status) => {
       this.store.dispatch(new SetRiskCoversFilter({ status: (status as RiskCoverStatus) || null }));
     });
     this.store.dispatch(new LoadRiskCovers());
-  }
-
-  protected applySearch(): void {
-    const search = this.searchControl.value || '';
-    this.store.dispatch(new SetRiskCoversFilter({ search }));
   }
 
   protected clearFilters(): void {

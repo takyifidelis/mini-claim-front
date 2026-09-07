@@ -16,6 +16,7 @@ import { StatusBadgeComponent } from '../../../../shared/components/status-badge
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { MoneyPipe } from '../../../../shared/pipes/money.pipe';
 import { Currency, PolicyStatus } from '../../../../shared/models';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 /**
  * Policy list page.
@@ -73,6 +74,14 @@ export class PolicyListComponent implements OnInit {
    * Subscribes to currency/status filter controls and dispatches `LoadPolicies`.
    */
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        map((value) => value?.trim() ?? ''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => this.store.dispatch(new SetPoliciesFilter({ search })));
+
     this.currencyControl.valueChanges.subscribe((currency) => {
       this.store.dispatch(new SetPoliciesFilter({ currency: (currency as Currency) || null }));
     });
@@ -80,11 +89,6 @@ export class PolicyListComponent implements OnInit {
       this.store.dispatch(new SetPoliciesFilter({ status: (status as PolicyStatus) || null }));
     });
     this.store.dispatch(new LoadPolicies());
-  }
-
-  protected applySearch(): void {
-    const search = this.searchControl.value || '';
-    this.store.dispatch(new SetPoliciesFilter({ search }));
   }
 
   protected clearFilters(): void {

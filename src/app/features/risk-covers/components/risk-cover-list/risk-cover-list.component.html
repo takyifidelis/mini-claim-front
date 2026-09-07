@@ -7,7 +7,7 @@
       </p>
     </div>
     <div class="list-page__header-actions">
-      <a routerLink="/risk-covers/new" class="btn btn-success">
+      <a routerLink="/dashboard/risk-covers/new" class="btn btn-success">
         <span>New Risk Cover</span>
       </a>
     </div>
@@ -21,7 +21,6 @@
           label="Search"
           placeholder="Search by code or name..."
           [formControl]="searchControl"
-          (blur)="applySearch()"
         />
       </div>
       <div class="filter-bar__actions">
@@ -82,7 +81,7 @@
             <td>{{ cover.createdAt | date: 'mediumDate' }}</td>
             <td class="text-end">
               <a
-                [routerLink]="['/risk-covers', cover.id]"
+                [routerLink]="['/dashboard/risk-covers', cover.id]"
                 class="btn btn-sm btn-outline-success"
                 [attr.aria-label]="'View details for ' + cover.name"
               >

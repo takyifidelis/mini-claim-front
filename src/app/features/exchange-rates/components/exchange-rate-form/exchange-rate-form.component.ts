@@ -86,9 +86,9 @@ export class ExchangeRateFormComponent {
         this.submitting.set(false);
         const selected = this.store.selectSnapshot(ExchangeRatesState.selectedSheet);
         if (selected?.id) {
-          this.router.navigate(['/exchange-rates', selected.id]);
+          this.router.navigate(['/dashboard/exchange-rates', selected.id]);
         } else {
-          this.router.navigate(['/exchange-rates']);
+          this.router.navigate(['/dashboard/exchange-rates']);
         }
       },
       error: (err) => {

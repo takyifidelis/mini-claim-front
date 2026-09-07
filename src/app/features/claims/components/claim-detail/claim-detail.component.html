@@ -4,7 +4,7 @@
     <div>
       <nav aria-label="Breadcrumb" class="breadcrumb-nav">
         <ol class="breadcrumb-nav__list">
-          <li class="breadcrumb-nav__item"><a routerLink="/claims">Claims</a></li>
+          <li class="breadcrumb-nav__item"><a routerLink="/dashboard/claims">Claims</a></li>
           <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
             {{ claim()?.claimReference || 'Claim Detail' }}
           </li>
@@ -18,14 +18,14 @@
       </div>
       <p class="detail-page__description">
         Policy:
-        <a [routerLink]="['/policies', claim()?.policyId]"
+        <a [routerLink]="['/dashboard/policies', claim()?.policyId]"
           ><strong>{{ claim()?.policyNumber }}</strong></a
         >
         ({{ claim()?.insuredName }}) &bull; Currency: <strong>{{ claim()?.currency }}</strong>
       </p>
     </div>
     <div class="detail-page__header-actions">
-      <a routerLink="/claims" class="btn btn-outline-secondary">Back to Claims</a>
+      <a routerLink="/dashboard/claims" class="btn btn-outline-secondary">Back to Claims</a>
     </div>
   </div>
 
@@ -269,7 +269,7 @@
 
             <dt>Policy Reference</dt>
             <dd>
-              <a [routerLink]="['/policies', claim()!.policyId]">{{ claim()!.policyNumber }}</a>
+              <a [routerLink]="['/dashboard/policies', claim()!.policyId]">{{ claim()!.policyNumber }}</a>
             </dd>
           </dl>
         </div>
@@ -630,7 +630,7 @@
     [danger]="true"
     confirmLabel="Proceed with Payment"
     [loading]="actionLoading()"
-    (confirm)="onConfirmPayment()"
+    (confirm)="onConfirmPayment(true)"
     (cancel)="paymentOverpaymentConfirmOpen.set(false)"
   />
 </div>

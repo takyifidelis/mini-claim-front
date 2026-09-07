@@ -160,7 +160,7 @@ export class ClaimSettlementComponent implements OnInit {
     this.onConfirmPayment(false);
   }
 
-  protected onConfirmPayment(confirmOverpayment = true): void {
+  protected onConfirmPayment(confirmOverpayment = false): void {
     const c = this.claim();
     if (!c) return;
 
@@ -187,6 +187,10 @@ export class ClaimSettlementComponent implements OnInit {
         this.successMessage.set('Payment recorded successfully.');
       },
       error: (err) => {
+        if (err?.code === 'OVERPAYMENT_CONFIRMATION_REQUIRED') {
+          this.paymentOverpaymentConfirmOpen.set(true);
+          return;
+        }
         this.actionError.set(err?.message || 'Failed to record payment.');
       },
     });

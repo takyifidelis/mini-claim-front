@@ -16,6 +16,7 @@ import { StatusBadgeComponent } from '../../../../shared/components/status-badge
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { MoneyPipe } from '../../../../shared/pipes/money.pipe';
 import { Currency } from '../../../../shared/models';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 /**
  * Claims payout queue list.
@@ -64,6 +65,14 @@ export class ClaimPayoutListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        map((value) => value?.trim() ?? ''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => this.store.dispatch(new SetClaimsFilter({ search })));
+
     this.currencyControl.valueChanges.subscribe((currency) => {
       this.store.dispatch(new SetClaimsFilter({ currency: (currency as Currency) || null }));
     });
@@ -75,11 +84,6 @@ export class ClaimPayoutListComponent implements OnInit {
     });
 
     this.store.dispatch(new ClearClaimsFilter({ status: 'RESERVED_NOT_SETTLED' }));
-  }
-
-  protected applySearch(): void {
-    const search = this.searchControl.value || '';
-    this.store.dispatch(new SetClaimsFilter({ search }));
   }
 
   protected clearFilters(): void {

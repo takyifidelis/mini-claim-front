@@ -15,12 +15,9 @@
     </legend>
 
     <p class="text-muted small mb-3">
-      Most transactions are performed in Ghana cedis (GHS). Enter the equivalent value in Ghana
-      Cedis (GHS) for <strong>1 USD</strong> and <strong>1 EUR</strong> using Bank of Ghana's
-      standard 4 decimal places. Bidirectional conversion rates (USD &harr; GHS, EUR &harr; GHS, USD
-      &harr; EUR) will be automatically calculated. Submitting this form creates a new immutable
-      exchange-rate record and sets it as the active rate for new policies. Existing policies remain
-      locked to their historical rate.
+      Enter the GHS equivalent of **1 USD** and **1 EUR** to four decimal places. Other conversions
+      will be calculated automatically. The new rates will apply to new policies, while existing
+      policies will retain their original rates.
     </p>
 
     @if (formSuccess()) {
@@ -141,7 +138,6 @@
           label="Search"
           placeholder="Search by reference..."
           [formControl]="searchControl"
-          (blur)="applySearch()"
         />
       </div>
       <div class="filter-bar__actions">
@@ -202,7 +198,7 @@
 
             <td class="text-end">
               <a
-                [routerLink]="['/exchange-rates', sheet.id]"
+                [routerLink]="['/dashboard/exchange-rates', sheet.id]"
                 class="btn btn-sm btn-outline-success"
                 [attr.aria-label]="'View rates for ' + sheet.reference"
               >

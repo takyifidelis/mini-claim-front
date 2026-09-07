@@ -64,9 +64,9 @@ export class RiskCoverFormComponent {
         this.submitting.set(false);
         const selected = this.store.selectSnapshot(RiskCoversState.selected);
         if (selected?.id) {
-          this.router.navigate(['/risk-covers', selected.id]);
+          this.router.navigate(['/dashboard/risk-covers', selected.id]);
         } else {
-          this.router.navigate(['/risk-covers']);
+          this.router.navigate(['/dashboard/risk-covers']);
         }
       },
       error: (err) => {

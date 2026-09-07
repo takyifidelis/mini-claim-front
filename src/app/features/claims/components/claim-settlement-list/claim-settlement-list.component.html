@@ -16,7 +16,6 @@
           label="Search"
           placeholder="Search reference, policy #, insured..."
           [formControl]="searchControl"
-          (blur)="applySearch()"
         />
       </div>
       <div class="filter-bar__field">
@@ -102,7 +101,7 @@
               <strong>{{ claim.claimReference }}</strong>
             </td>
             <td>
-              <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
+              <a [routerLink]="['/dashboard/policies', claim.policyId]">{{ claim.policyNumber }}</a>
             </td>
             <td>{{ claim.insuredName }}</td>
             <td>
@@ -128,7 +127,7 @@
             <td><app-status-badge [status]="claim.status" /></td>
             <td class="text-end">
               <a
-                [routerLink]="['/claims', claim.id, 'settle']"
+                [routerLink]="['/dashboard/claims', claim.id, 'settle']"
                 class="btn btn-sm btn-outline-success"
                 [attr.aria-label]="'Record payment for ' + claim.claimReference"
               >

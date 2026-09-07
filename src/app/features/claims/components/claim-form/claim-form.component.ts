@@ -124,9 +124,9 @@ export class ClaimFormComponent implements OnInit {
         this.submitting.set(false);
         const selected = this.store.selectSnapshot(ClaimsState.selectedClaim);
         if (selected?.id) {
-          this.router.navigate(['/claims', selected.id]);
+          this.router.navigate(['/dashboard/claims', selected.id]);
         } else {
-          this.router.navigate(['/claims']);
+          this.router.navigate(['/dashboard/claims']);
         }
       },
       error: (err) => {

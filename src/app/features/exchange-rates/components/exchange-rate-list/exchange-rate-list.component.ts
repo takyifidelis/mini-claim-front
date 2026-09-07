@@ -17,6 +17,7 @@ import { FormInputComponent } from '../../../../shared/form-input/form-input.com
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { RatePipe } from '../../../../shared/pipes/rate.pipe';
 import { rateValidator } from '../../../../shared/utilities/decimal.validator';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 /**
  * Exchange rate list and quick-update page.
@@ -97,6 +98,14 @@ export class ExchangeRateListComponent implements OnInit {
    * Pre-populates the rate form from the current active sheet on success.
    */
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        map((value) => value?.trim() ?? ''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => this.store.dispatch(new SetExchangeRatesFilter({ search })));
+
     this.store.dispatch(new LoadExchangeRates());
     this.store.dispatch(new LoadCurrentExchangeRate()).subscribe({
       next: () => {
@@ -161,13 +170,8 @@ export class ExchangeRateListComponent implements OnInit {
     });
   }
 
-  protected applySearch(): void {
-    const search = this.searchControl.value || '';
-    this.store.dispatch(new SetExchangeRatesFilter({ search }));
-  }
-
   protected clearFilters(): void {
-    this.searchControl.setValue('');
+    this.searchControl.setValue('', { emitEvent: false });
     this.store.dispatch(new ClearExchangeRatesFilter());
   }
 

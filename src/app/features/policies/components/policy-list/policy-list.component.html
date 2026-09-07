@@ -7,7 +7,7 @@
       </p>
     </div>
     <div class="list-page__header-actions">
-      <a routerLink="/policies/new" class="btn btn-success">
+      <a routerLink="/dashboard/policies/new" class="btn btn-success">
         <span>New Policy</span>
       </a>
     </div>
@@ -21,7 +21,6 @@
           label="Search"
           placeholder="Search by policy number or insured name..."
           [formControl]="searchControl"
-          (blur)="applySearch()"
         />
       </div>
       <div class="filter-bar__field">
@@ -117,7 +116,7 @@
             <td>{{ policy.createdAt | date: 'shortDate' }}</td>
             <td class="text-end">
               <a
-                [routerLink]="['/policies', policy.id]"
+                [routerLink]="['/dashboard/policies', policy.id]"
                 class="btn btn-sm btn-outline-success"
                 [attr.aria-label]="'View policy ' + policy.policyNumber"
               >

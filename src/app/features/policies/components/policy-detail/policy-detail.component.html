@@ -3,7 +3,7 @@
     <div>
       <nav aria-label="Breadcrumb" class="breadcrumb-nav">
         <ol class="breadcrumb-nav__list">
-          <li class="breadcrumb-nav__item"><a routerLink="/policies">Policies</a></li>
+          <li class="breadcrumb-nav__item"><a routerLink="/dashboard/policies">Policies</a></li>
           <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
             {{ policy()?.policyNumber || 'Detail' }}
           </li>
@@ -20,10 +20,10 @@
       </p>
     </div>
     <div class="detail-page__header-actions">
-      <a routerLink="/claims/new" class="btn btn-success">
+      <a routerLink="/dashboard/claims/new" class="btn btn-success">
         <span>Register Claim</span>
       </a>
-      <a routerLink="/policies" class="btn btn-outline-secondary">Back to Policies</a>
+      <a routerLink="/dashboard/policies" class="btn btn-outline-secondary">Back to Policies</a>
     </div>
   </div>
 
@@ -77,7 +77,7 @@
 
         <dt>Locked Rate Sheet</dt>
         <dd>
-          <a [routerLink]="['/exchange-rates', policy()!.exchangeRateSheetId]">
+          <a [routerLink]="['/dashboard/exchange-rates', policy()!.exchangeRateSheetId]">
             {{ policy()!.exchangeRateSheet?.reference || policy()!.exchangeRateSheetId }}
           </a>
         </dd>

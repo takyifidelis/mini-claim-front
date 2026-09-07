@@ -11,14 +11,14 @@
       </div>
       <p class="detail-page__description">
         Policy:
-        <a [routerLink]="['/policies', claim()?.policyId]"
+        <a [routerLink]="['/dashboard/policies', claim()?.policyId]"
           ><strong>{{ claim()?.policyNumber }}</strong></a
         >
         ({{ claim()?.insuredName }}) &bull; Currency: <strong>{{ claim()?.currency }}</strong>
       </p>
     </div>
     <div class="detail-page__header-actions">
-      <a routerLink="/claims/settlements" class="btn btn-outline-secondary"
+      <a routerLink="/dashboard/claims/settlements" class="btn btn-outline-secondary"
         >Back to Settlement List</a
       >
     </div>
@@ -281,7 +281,7 @@
     [danger]="true"
     confirmLabel="Proceed with Payment"
     [loading]="actionLoading()"
-    (confirm)="onConfirmPayment()"
+    (confirm)="onConfirmPayment(true)"
     (cancel)="paymentOverpaymentConfirmOpen.set(false)"
   />
 </div>

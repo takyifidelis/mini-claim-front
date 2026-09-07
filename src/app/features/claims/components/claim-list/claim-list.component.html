@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="list-page__header-actions">
-      <a routerLink="/claims/new" class="btn btn-success">Register Claim</a>
+      <a routerLink="/dashboard/claims/new" class="btn btn-success">Register Claim</a>
     </div>
   </div>
 
@@ -25,7 +25,6 @@
           label="Search"
           placeholder="Search reference, policy #, insured..."
           [formControl]="searchControl"
-          (blur)="applySearch()"
         />
       </div>
       <div class="filter-bar__field">
@@ -122,7 +121,7 @@
               <strong>{{ claim.claimReference }}</strong>
             </td>
             <td>
-              <a [routerLink]="['/policies', claim.policyId]">{{ claim.policyNumber }}</a>
+              <a [routerLink]="['/dashboard/policies', claim.policyId]">{{ claim.policyNumber }}</a>
             </td>
             <td>{{ claim.insuredName }}</td>
             <td>
@@ -149,7 +148,7 @@
             <td><app-status-badge [status]="claim.status" /></td>
             <td class="text-end">
               <a
-                [routerLink]="['/claims', claim.id]"
+                [routerLink]="['/dashboard/claims', claim.id]"
                 class="btn btn-sm btn-outline-success"
                 [attr.aria-label]="'View claim ' + claim.claimReference"
               >

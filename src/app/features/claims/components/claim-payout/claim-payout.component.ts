@@ -125,6 +125,10 @@ export class ClaimPayoutComponent implements OnInit {
         this.successMessage.set('Approved payout amount saved successfully.');
       },
       error: (err) => {
+        if (err?.code === 'OVERPAYMENT_CONFIRMATION_REQUIRED') {
+          this.payoutOverpaymentConfirmOpen.set(true);
+          return;
+        }
         this.actionError.set(err?.message || 'Failed to set approved payout.');
       },
     });

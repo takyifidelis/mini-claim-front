@@ -3,7 +3,7 @@
     <div>
       <nav aria-label="Breadcrumb" class="breadcrumb-nav">
         <ol class="breadcrumb-nav__list">
-          <li class="breadcrumb-nav__item"><a routerLink="/risk-covers">Risk Covers</a></li>
+          <li class="breadcrumb-nav__item"><a routerLink="/dashboard/risk-covers">Risk Covers</a></li>
           <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
             {{ cover()?.code || 'Detail' }}
           </li>
@@ -20,7 +20,7 @@
       </p>
     </div>
     <div class="detail-page__header-actions">
-      <a routerLink="/risk-covers" class="btn btn-outline-secondary">Back to List</a>
+      <a routerLink="/dashboard/risk-covers" class="btn btn-outline-secondary">Back to List</a>
     </div>
   </div>
 

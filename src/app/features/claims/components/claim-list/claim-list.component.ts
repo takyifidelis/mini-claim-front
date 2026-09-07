@@ -17,6 +17,7 @@ import { CurrencyTotalsComponent } from '../../../../shared/components/currency-
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { MoneyPipe } from '../../../../shared/pipes/money.pipe';
 import { Currency, DerivedClaimStatus } from '../../../../shared/models';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 /**
  * Full claims list page.
@@ -82,6 +83,14 @@ export class ClaimListComponent implements OnInit {
    * `ClearClaimsFilter` to reset any workflow status pre-filter.
    */
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        map((value) => value?.trim() ?? ''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((search) => this.store.dispatch(new SetClaimsFilter({ search })));
+
     this.statusControl.valueChanges.subscribe((status) => {
       this.store.dispatch(new SetClaimsFilter({ status: (status as DerivedClaimStatus) || null }));
     });
@@ -96,11 +105,6 @@ export class ClaimListComponent implements OnInit {
     });
 
     this.store.dispatch(new ClearClaimsFilter());
-  }
-
-  protected applySearch(): void {
-    const search = this.searchControl.value || '';
-    this.store.dispatch(new SetClaimsFilter({ search }));
   }
 
   protected clearFilters(): void {

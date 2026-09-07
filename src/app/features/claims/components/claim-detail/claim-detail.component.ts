@@ -290,6 +290,10 @@ export class ClaimDetailComponent implements OnInit {
         this.payoutOverpaymentConfirmOpen.set(false);
       },
       error: (err) => {
+        if (err?.code === 'OVERPAYMENT_CONFIRMATION_REQUIRED') {
+          this.payoutOverpaymentConfirmOpen.set(true);
+          return;
+        }
         this.actionError.set(err?.message || 'Failed to set approved payout.');
       },
     });
@@ -368,7 +372,7 @@ export class ClaimDetailComponent implements OnInit {
     this.onConfirmPayment(false);
   }
 
-  protected onConfirmPayment(confirmOverpayment = true): void {
+  protected onConfirmPayment(confirmOverpayment = false): void {
     const c = this.claim();
     if (!c) return;
 
@@ -393,6 +397,10 @@ export class ClaimDetailComponent implements OnInit {
         });
       },
       error: (err) => {
+        if (err?.code === 'OVERPAYMENT_CONFIRMATION_REQUIRED') {
+          this.paymentOverpaymentConfirmOpen.set(true);
+          return;
+        }
         this.actionError.set(err?.message || 'Failed to record payment.');
       },
     });

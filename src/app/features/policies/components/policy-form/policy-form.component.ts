@@ -161,9 +161,9 @@ export class PolicyFormComponent implements OnInit {
         this.submitting.set(false);
         const selected = this.store.selectSnapshot(PoliciesState.selectedPolicy);
         if (selected?.id) {
-          this.router.navigate(['/policies', selected.id]);
+          this.router.navigate(['/dashboard/policies', selected.id]);
         } else {
-          this.router.navigate(['/policies']);
+          this.router.navigate(['/dashboard/policies']);
         }
       },
       error: (err) => {

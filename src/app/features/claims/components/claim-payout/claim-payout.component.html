@@ -11,14 +11,14 @@
       </div>
       <p class="detail-page__description">
         Policy:
-        <a [routerLink]="['/policies', claim()?.policyId]"
+        <a [routerLink]="['/dashboard/policies', claim()?.policyId]"
           ><strong>{{ claim()?.policyNumber }}</strong></a
         >
         ({{ claim()?.insuredName }}) &bull; Currency: <strong>{{ claim()?.currency }}</strong>
       </p>
     </div>
     <div class="detail-page__header-actions">
-      <a routerLink="/claims/payouts" class="btn btn-outline-secondary">Back to Payouts List</a>
+      <a routerLink="/dashboard/claims/payouts" class="btn btn-outline-secondary">Back to Payouts List</a>
     </div>
   </div>
 
